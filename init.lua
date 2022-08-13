@@ -55,7 +55,7 @@ if is_uninv then
 
 	unified_inventory.register_craft_type("barrel", {
 		description = "Barrel",
-		icon = 'wine_barrel.png',
+		icon = "wine_barrel.png",
 		width = 1,
 		height = 1
 	})
@@ -75,12 +75,12 @@ local ferment = {
 	{"farming:corn", "wine:glass_bourbon"},
 	{"farming:baked_potato", "wine:glass_vodka"},
 	{"farming:coffee_beans", "wine:glass_coffee_liquor"},
-	{"wine:glass_champagne_raw", "wine:glass_champagne"}
+	{{"wine:glass_wine", "farming:sugar"}, "wine:glass_champagne"}
 }
 
 if mcl then
-	ferment[4] = {"mcl_core:apple", "wine:glass_cider"}
-	ferment[5] = {"mcl_core:paper", "wine:glass_rum"}
+	ferment[5] = {"mcl_core:apple", "wine:glass_cider"}
+	ferment[6] = {"mcl_core:reeds", "wine:glass_rum"}
 end
 
 
@@ -88,9 +88,13 @@ if is_uninv then
 
 	for _, f in pairs(ferment) do
 
+		if type(f[1]) == "string" then
+			f = {{f[1]}, f[2]}
+		end
+
 		unified_inventory.register_craft({
 			type = "barrel",
-			items = {f[1]},
+			items = f[1],
 			output = f[2]
 		})
 	end
@@ -233,26 +237,8 @@ minetest.register_craft({
 	recipe = "wine:glass_wine"
 })
 
-
--- Raw champagne
-if minetest.get_modpath("farming")
-and farming.mod and (farming.mod == "undo" or farming.mod == "redo") then
-
-	minetest.register_craftitem("wine:glass_champagne_raw", {
-		description = "Raw Champagne",
-		inventory_image = "wine_champagne_raw_glass.png",
-		groups = {vessel = 1, flammable = 3}
-	})
-
-	minetest.register_craft({
---		type = "shapeless",
-		output = "wine:glass_champagne_raw",
-		recipe = {
-			{"wine:glass_wine", "farming:sugar"}
-		}
-	})
-end
-
+-- Raw champagne alias
+minetest.register_alias("wine:glass_champagne_raw", "wine:glass_champagne")
 
 -- override to add food group to wine and brandy glass
 minetest.override_item("wine:glass_wine", {
@@ -338,7 +324,6 @@ minetest.register_node("wine:blue_agave", {
 
 -- blue agave into cyan dye
 minetest.register_craft( {
---	type = "shapeless",
 	output = "dye:cyan 4",
 	recipe = {{"wine:blue_agave"}}
 })
@@ -368,7 +353,7 @@ minetest.register_craft({
 minetest.register_craft( {
 	output = "default:paper 3",
 	recipe = {
-		{"wine:blue_agave", "wine:blue_agave", "wine:blue_agave"},
+		{"wine:blue_agave", "wine:blue_agave", "wine:blue_agave"}
 	}
 })
 
@@ -402,7 +387,6 @@ if minetest.get_modpath("farming")
 and farming.mod and (farming.mod == "redo" or farming.mod == "undo") then
 
 	minetest.register_craft({
---		type = "shapeless",
 		output = "wine:glass_mint",
 		recipe = {
 			{"farming:mint_leaf", "farming:mint_leaf", "farming:mint_leaf"},
@@ -413,15 +397,19 @@ end
 
 
 -- Wine barrel formspec
-winebarrel_formspec = "size[8,9]"
-	.. "list[current_name;src;2,1;1,1;]"
+local function winebarrel_formspec(item_percent)
+	return "size[8,9]"
+	.. "list[current_name;src;1,1;2,1;]"
 	.. "list[current_name;dst;5,1;1,1;]"
 	.. "list[current_player;main;0,5;8,4;]"
 	.. "listring[current_name;dst]"
 	.. "listring[current_player;main]"
 	.. "listring[current_name;src]"
 	.. "listring[current_player;main]"
-	.. "image[3.5,1;1,1;gui_furnace_arrow_bg.png^[transformR270]"
+	.. "image[3.5,1;1,1;gui_furnace_arrow_bg.png^[lowpart:"
+	.. (item_percent) .. ":gui_furnace_arrow_fg.png^[transformR270]"
+
+end
 
 
 -- Wine barrel node
@@ -444,13 +432,13 @@ minetest.register_node("wine:wine_barrel", {
 
 		local meta = minetest.get_meta(pos)
 
-		meta:set_string("formspec", winebarrel_formspec)
+		meta:set_string("formspec", winebarrel_formspec(0))
 		meta:set_string("infotext", S("Fermenting Barrel"))
 		meta:set_float("status", 0.0)
 
 		local inv = meta:get_inventory()
 
-		inv:set_size("src", 1)
+		inv:set_size("src", 2)
 		inv:set_size("dst", 1)
 	end,
 
@@ -564,13 +552,29 @@ minetest.register_node("wine:wine_barrel", {
 		end
 
 		-- does it contain any of the source items on the list?
-		local has_item
+		local has_item, recipe
 
 		for n = 1, #ferment do
 
-			if inv:contains_item("src", ItemStack(ferment[n][1])) then
+			recipe = ferment[n]
 
-				has_item = n
+			if type(recipe[1]) == "string" then
+				recipe = {{recipe[1]}, recipe[2]}
+			end
+
+			if inv:contains_item("src", ItemStack(recipe[1][1])) then
+
+				has_item = true
+
+				-- check for second recipe item
+				if recipe[1][2] then
+
+					if inv:contains_item("src", ItemStack(recipe[1][2])) then
+						has_item = 2 -- used further on for item checks
+					else
+						has_item = false
+					end
+				end
 
 				break
 			end
@@ -581,7 +585,7 @@ minetest.register_node("wine:wine_barrel", {
 		end
 
 		-- is there room for additional fermentation?
-		if not inv:room_for_item("dst", ferment[has_item][2]) then
+		if not inv:room_for_item("dst", recipe[2]) then
 
 			meta:set_string("infotext", S("Fermenting Barrel (FULL)"))
 
@@ -594,11 +598,19 @@ minetest.register_node("wine:wine_barrel", {
 		if status < 100 then
 			meta:set_string("infotext", S("Fermenting Barrel (@1% Done)", status))
 			meta:set_float("status", status + 5)
+			meta:set_string("formspec", winebarrel_formspec(status + 5))
 		else
-			inv:remove_item("src", ferment[has_item][1])
-			inv:add_item("dst", ferment[has_item][2])
+			inv:remove_item("src", recipe[1][1])
+
+			-- remove 2nd recipeitem if found
+			if has_item == 2 then
+				inv:remove_item("src", recipe[1][2])
+			end
+
+			inv:add_item("dst", recipe[2])
 
 			meta:set_float("status", 0,0)
+			meta:set_string("formspec", winebarrel_formspec(0))
 		end
 
 		if inv:is_empty("src") then
@@ -612,11 +624,7 @@ minetest.register_node("wine:wine_barrel", {
 
 
 -- wine barrel craft recipe (with mineclone2 check)
-local ingot = "default:steel_ingot"
-
-if mcl then
-	ingot = "mcl_core:iron_ingot"
-end
+local ingot = mcl and "mcl_core:iron_ingot" or "default:steel_ingot"
 
 minetest.register_craft({
 	output = "wine:wine_barrel",
@@ -638,7 +646,7 @@ minetest.register_lbm({
 		local t = minetest.get_node_timer(pos)
 
 		t:start(5)
-	end,
+	end
 })
 
 minetest.register_lbm({
@@ -650,7 +658,7 @@ minetest.register_lbm({
 		local t = minetest.get_node_timer(pos)
 
 		t:start(17)
-	end,
+	end
 })
 
 
