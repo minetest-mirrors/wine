@@ -398,6 +398,7 @@ end
 
 -- Wine barrel formspec
 local function winebarrel_formspec(item_percent)
+
 	return "size[8,9]"
 	.. "list[current_name;src;1,1;2,1;]"
 	.. "list[current_name;dst;5,1;1,1;]"
@@ -598,7 +599,7 @@ minetest.register_node("wine:wine_barrel", {
 		if status < 100 then
 			meta:set_string("infotext", S("Fermenting Barrel (@1% Done)", status))
 			meta:set_float("status", status + 5)
-			meta:set_string("formspec", winebarrel_formspec(status + 5))
+			meta:set_string("formspec", winebarrel_formspec(status))
 		else
 			inv:remove_item("src", recipe[1][1])
 
