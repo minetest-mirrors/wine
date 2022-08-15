@@ -120,22 +120,22 @@ function wine:add_item(list)
 end
 
 
--- list of beverages (name, desc, has bottle, hunger, thirst)
+-- list of beverages (name, desc, has bottle, hunger, thirst, alcoholic)
 local beverages = {
-	{"wine", "Wine", true, 2, 5},
-	{"beer", "Beer", true, 2, 8},
-	{"rum", "Rum", true, 2, 5},
-	{"tequila", "Tequila", true, 2, 3},
-	{"wheat_beer", "Wheat Beer", true, 2, 8},
-	{"sake", "Sake", true, 2, 3},
-	{"bourbon", "Bourbon", true, 2, 3},
-	{"vodka", "Vodka", true, 2, 3},
-	{"cider", "Cider", true, 2, 6},
-	{"mead", "Honey-Mead", true, 4, 5},
-	{"mint", "Mint Julep", true, 4, 3},
-	{"brandy", "Brandy", true, 3, 4},
-	{"coffee_liquor", "Coffee Liquor", true, 3, 4},
-	{"champagne", "Champagne", true, 4, 5}
+	{"wine", "Wine", true, 2, 5, 1},
+	{"beer", "Beer", true, 2, 8, 1},
+	{"rum", "Rum", true, 2, 5, 1},
+	{"tequila", "Tequila", true, 2, 3, 1},
+	{"wheat_beer", "Wheat Beer", true, 2, 8, 1},
+	{"sake", "Sake", true, 2, 3, 1},
+	{"bourbon", "Bourbon", true, 2, 3, 1},
+	{"vodka", "Vodka", true, 2, 3, 1},
+	{"cider", "Cider", true, 2, 6, 1},
+	{"mead", "Honey-Mead", true, 4, 5, 1},
+	{"mint", "Mint Julep", true, 4, 3, 1},
+	{"brandy", "Brandy", true, 3, 4, 1},
+	{"coffee_liquor", "Coffee Liquor", true, 3, 4, 1},
+	{"champagne", "Champagne", true, 4, 5, 1}
 }
 
 
@@ -224,8 +224,9 @@ for n = 1, #beverages do
 	local has_bottle = beverages[n][3]
 	local num_hunger = beverages[n][4]
 	local num_thirst = beverages[n][5]
+	local alcohol = beverages[n][6]
 
-	wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, 1)
+	wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcohol)
 end
 
 
@@ -321,6 +322,7 @@ minetest.register_node("wine:blue_agave", {
 		return true
 	end
 })
+
 
 -- blue agave into cyan dye
 minetest.register_craft( {
@@ -456,8 +458,7 @@ minetest.register_node("wine:wine_barrel", {
 		return true
 	end,
 
-	allow_metadata_inventory_take = function(
-			pos, listname, index, stack, player)
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
 
 		if minetest.is_protected(pos, player:get_player_name()) then
 			return 0
@@ -535,9 +536,9 @@ minetest.register_node("wine:wine_barrel", {
 		-- the default stack, from which objects will be taken
 		input_inventory = "dst",
 
-		connect_sides = {
-			left = 1, right = 1, back = 1,
-			front = 1, bottom = 1, top = 1}	} end end)(),
+		connect_sides = {left = 1, right = 1, back = 1, front = 1, bottom = 1, top = 1}
+
+	} end end)(),
 
 	on_timer = function(pos)
 
@@ -560,15 +561,17 @@ minetest.register_node("wine:wine_barrel", {
 
 			recipe = ferment[n]
 
+			-- convert any old string recipe to table
 			if type(recipe[1]) == "string" then
 				recipe = {{recipe[1]}, recipe[2]}
 			end
 
+			-- check for first recipe item
 			if inv:contains_item("src", ItemStack(recipe[1][1])) then
 
 				has_item = true
 
-				-- check for second recipe item
+				-- check for second recipe item if required
 				if recipe[1][2] then
 
 					if inv:contains_item("src", ItemStack(recipe[1][2])) then
@@ -598,16 +601,17 @@ minetest.register_node("wine:wine_barrel", {
 
 		-- fermenting (change status)
 		if status < 100 then
+
 			meta:set_string("infotext", S("Fermenting Barrel (@1% Done)", status))
 			meta:set_float("status", status + 5)
 
-			local name = minetest.registered_items[recipe[2]].description or ""
+			local desc = minetest.registered_items[recipe[2]].description or ""
 
-			meta:set_string("formspec", winebarrel_formspec(status, S("Brewing: @1", name)))
+			meta:set_string("formspec", winebarrel_formspec(status, S("Brewing: @1", desc)))
 		else
 			inv:remove_item("src", recipe[1][1])
 
-			-- remove 2nd recipeitem if found
+			-- remove 2nd recipe item if found
 			if has_item == 2 then
 				inv:remove_item("src", recipe[1][2])
 			end

@@ -28,7 +28,7 @@ re-arranged code, tweaked lucky blocks, updated translations
 - 1.7 - Added more uses for blue agave (fuel, paper, food, agave syrup)
 - 1.8 - Added glass and bottles for Champagne, Brandy and Coffee Liquor (thanks Felfa)
 - 1.9 - Added wine:add_drink() function to create drink glasses and bottles
-- 1.95 - Tweaked code to accept 2 item recipes, fixed mineclone2 rum recipe
+- 1.95 - Tweaked code to accept 2 item recipes, fixed mineclone2 rum recipe and ui recipes
 
 Lucky Blocks: 18
 
@@ -42,7 +42,7 @@ e.g.
 
 wine:add_item({
 	{"farming:barley", "wine:glass_beer"},
-	{"default:apple", "wine:glass_cider"},
+	{"default:apple 2", "wine:glass_cider"}, -- 2x apples make 1x glass cider
 	{{"default:apple", "farming:sugar"}, "wine:glass_sparkling_apple},
 })
 

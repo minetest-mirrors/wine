@@ -30,4 +30,5 @@ Agave Syrup=
 Fermenting Barrel=
 Fermenting Barrel (FULL)=
 Fermenting Barrel (@1% Done)=
+Brewing: @1=
 [MOD] Wine loaded=
