@@ -56,7 +56,7 @@ if is_uninv then
 	unified_inventory.register_craft_type("barrel", {
 		description = "Barrel",
 		icon = "wine_barrel.png",
-		width = 1,
+		width = 2,
 		height = 1
 	})
 end
@@ -397,7 +397,7 @@ end
 
 
 -- Wine barrel formspec
-local function winebarrel_formspec(item_percent)
+local function winebarrel_formspec(item_percent, brewing)
 
 	return "size[8,9]"
 	.. "list[current_name;src;1,1;2,1;]"
@@ -409,7 +409,7 @@ local function winebarrel_formspec(item_percent)
 	.. "listring[current_player;main]"
 	.. "image[3.5,1;1,1;gui_furnace_arrow_bg.png^[lowpart:"
 	.. (item_percent) .. ":gui_furnace_arrow_fg.png^[transformR270]"
-
+	.. "tooltip[3.5,1;1,1;" .. brewing .. "]"
 end
 
 
@@ -433,7 +433,7 @@ minetest.register_node("wine:wine_barrel", {
 
 		local meta = minetest.get_meta(pos)
 
-		meta:set_string("formspec", winebarrel_formspec(0))
+		meta:set_string("formspec", winebarrel_formspec(0, ""))
 		meta:set_string("infotext", S("Fermenting Barrel"))
 		meta:set_float("status", 0.0)
 
@@ -534,6 +534,7 @@ minetest.register_node("wine:wine_barrel", {
 
 		-- the default stack, from which objects will be taken
 		input_inventory = "dst",
+
 		connect_sides = {
 			left = 1, right = 1, back = 1,
 			front = 1, bottom = 1, top = 1}	} end end)(),
@@ -599,7 +600,10 @@ minetest.register_node("wine:wine_barrel", {
 		if status < 100 then
 			meta:set_string("infotext", S("Fermenting Barrel (@1% Done)", status))
 			meta:set_float("status", status + 5)
-			meta:set_string("formspec", winebarrel_formspec(status))
+
+			local name = minetest.registered_items[recipe[2]].description or ""
+
+			meta:set_string("formspec", winebarrel_formspec(status, S("Brewing: @1", name)))
 		else
 			inv:remove_item("src", recipe[1][1])
 
@@ -611,7 +615,7 @@ minetest.register_node("wine:wine_barrel", {
 			inv:add_item("dst", recipe[2])
 
 			meta:set_float("status", 0,0)
-			meta:set_string("formspec", winebarrel_formspec(0))
+			meta:set_string("formspec", winebarrel_formspec(0, ""))
 		end
 
 		if inv:is_empty("src") then
