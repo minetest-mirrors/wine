@@ -446,6 +446,18 @@ minetest.register_node("wine:wine_barrel", {
 		inv:set_size("dst", 1)
 	end,
 
+	-- punch barrel to change old 1x slot barrels into 2x slot
+	on_punch = function(pos, node, puncher, pointed_thing)
+
+		local meta = minetest.get_meta(pos)
+		local inv = meta and meta:get_inventory()
+		local size = inv and inv:get_size("src")
+
+		if size and size == 1 then
+			inv:set_size("src", 2)
+		end
+	end,
+
 	can_dig = function(pos,player)
 
 		local meta = minetest.get_meta(pos)
@@ -587,6 +599,9 @@ minetest.register_node("wine:wine_barrel", {
 		end
 
 		if not has_item then
+
+			meta:set_string("infotext", S("Fermenting Barrel") .. " (X)")
+
 			return false
 		end
 
