@@ -402,16 +402,17 @@ end
 local function winebarrel_formspec(item_percent, brewing)
 
 	return "size[8,9]"
-	.. "list[current_name;src;1,1;2,1;]"
-	.. "list[current_name;dst;5,1;1,1;]"
+	.. "image[0.25,0.5;5.5,4.25;wine_barrel_fs_bg.png]"
+	.. "list[current_name;src;1.55,1.8;2,1;]"
+	.. "list[current_name;dst;6.5,1.8;1,1;]"
 	.. "list[current_player;main;0,5;8,4;]"
 	.. "listring[current_name;dst]"
 	.. "listring[current_player;main]"
 	.. "listring[current_name;src]"
 	.. "listring[current_player;main]"
-	.. "image[3.5,1;1,1;gui_furnace_arrow_bg.png^[lowpart:"
-	.. (item_percent) .. ":gui_furnace_arrow_fg.png^[transformR270]"
-	.. "tooltip[3.5,1;1,1;" .. brewing .. "]"
+	.. "image[5.2,1.8;1,1;wine_barrel_icon_bg.png^[lowpart:"
+	.. item_percent .. ":wine_barrel_icon.png]"
+	.. "tooltip[5,1.8;1,1;" .. brewing .. "]"
 end
 
 

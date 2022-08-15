@@ -44,3 +44,8 @@ Textures by Felfa (CC0)
   wine_coffee*.png
   wine_brandy*.png
   wine_sake_bottle.png
+
+Textures by Sirrobzeroone (CC-by-3.0)
+  wine_barrel_fs_bg.png
+  wine_barrel_icon.png
+  wine_barrel_icon_bg.png
