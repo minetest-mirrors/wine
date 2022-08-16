@@ -1,10 +1,9 @@
 wine = {}
 
+local path = minetest.get_modpath("wine")
 local def = minetest.get_modpath("default")
 local snd_d = def and default.node_sound_defaults()
 local snd_g = def and default.node_sound_glass_defaults()
-local snd_l = def and default.node_sound_leaves_defaults()
-local sand = "default:desert_sand"
 
 
 -- check for MineClone2
@@ -13,8 +12,6 @@ local mcl = minetest.get_modpath("mcl_core")
 if mcl then
 	snd_d = mcl_sounds.node_sound_glass_defaults()
 	snd_g = mcl_sounds.node_sound_defaults()
-	snd_l = mcl_sounds.node_sound_leaves_defaults()
-	sand = "mcl_core:sand"
 end
 
 
@@ -26,7 +23,7 @@ local is_uninv = minetest.global_exists("unified_inventory") or false
 local thirsty_mod = minetest.get_modpath("thirsty")
 
 
--- Intllib support
+-- translation support
 local S
 if minetest.get_translator then
 	S = minetest.get_translator("wine")
@@ -38,16 +35,16 @@ else
 			return s
 		end
 		a = {a, ...}
-		return s:gsub("(@?)@(%(?)(%d+)(%)?)",
-			function(e, o, n, c)
-				if e == ""then
-					return a[tonumber(n)] .. (o == "" and c or "")
-				else
-					return "@" .. o .. n .. c
-				end
-			end)
+		return s:gsub("(@?)@(%(?)(%d+)(%)?)", function(e, o, n, c)
+			if e == ""then
+				return a[tonumber(n)] .. (o == "" and c or "")
+			else
+				return "@" .. o .. n .. c
+			end
+		end)
 	end
 end
+wine.S = S
 
 
 -- Unified Inventory hints
@@ -62,43 +59,8 @@ if is_uninv then
 end
 
 
-local ferment = {
-	{"farming:grapes", "wine:glass_wine"},
-	{"farming:barley", "wine:glass_beer"},
-	{"mobs:honey", "wine:glass_mead"},
-	{"xdecor:honey", "wine:glass_mead"}, -- for when xdcecor is installed
-	{"default:apple", "wine:glass_cider"},
-	{"default:papyrus", "wine:glass_rum"},
-	{"wine:blue_agave", "wine:glass_tequila"},
-	{"farming:wheat", "wine:glass_wheat_beer"},
-	{"farming:rice", "wine:glass_sake"},
-	{"farming:corn", "wine:glass_bourbon"},
-	{"farming:baked_potato", "wine:glass_vodka"},
-	{"farming:coffee_beans", "wine:glass_coffee_liquor"},
-	{{"wine:glass_wine", "farming:sugar"}, "wine:glass_champagne"}
-}
-
-if mcl then
-	ferment[5] = {"mcl_core:apple", "wine:glass_cider"}
-	ferment[6] = {"mcl_core:reeds", "wine:glass_rum"}
-end
-
-
-if is_uninv then
-
-	for _, f in pairs(ferment) do
-
-		if type(f[1]) == "string" then
-			f = {{f[1]}, f[2]}
-		end
-
-		unified_inventory.register_craft({
-			type = "barrel",
-			items = f[1],
-			output = f[2]
-		})
-	end
-end
+-- fermentation list (drinks added in drinks.lua)
+local ferment = {}
 
 
 -- add item and resulting beverage to list
@@ -106,37 +68,26 @@ function wine:add_item(list)
 
 	for n = 1, #list do
 
-		table.insert(ferment, list[n])
+		local item = list[n]
 
+		-- change old string recipe item into table
+		if type(item[1]) == "string" then
+			item = { {item[1]}, item[2] }
+		end
+
+		table.insert(ferment, item)
+
+		-- if ui mod found add recipe
 		if is_uninv then
 
 			unified_inventory.register_craft({
 				type = "barrel",
-				items = {list[n][1]},
-				output = list[n][2]
+				items = item[1],
+				output = item[2]
 			})
 		end
 	end
 end
-
-
--- list of beverages (name, desc, has bottle, hunger, thirst, alcoholic)
-local beverages = {
-	{"wine", "Wine", true, 2, 5, 1},
-	{"beer", "Beer", true, 2, 8, 1},
-	{"rum", "Rum", true, 2, 5, 1},
-	{"tequila", "Tequila", true, 2, 3, 1},
-	{"wheat_beer", "Wheat Beer", true, 2, 8, 1},
-	{"sake", "Sake", true, 2, 3, 1},
-	{"bourbon", "Bourbon", true, 2, 3, 1},
-	{"vodka", "Vodka", true, 2, 3, 1},
-	{"cider", "Cider", true, 2, 6, 1},
-	{"mead", "Honey-Mead", true, 4, 5, 1},
-	{"mint", "Mint Julep", true, 4, 3, 1},
-	{"brandy", "Brandy", true, 3, 4, 1},
-	{"coffee_liquor", "Coffee Liquor", true, 3, 4, 1},
-	{"champagne", "Champagne", true, 4, 5, 1}
-}
 
 
 -- add drink with bottle
@@ -213,188 +164,6 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			recipe = {{"wine:bottle_" .. name}}
 		})
 	end
-end
-
-
--- create glasses and bottles
-for n = 1, #beverages do
-
-	local name = beverages[n][1]
-	local desc = beverages[n][2]
-	local has_bottle = beverages[n][3]
-	local num_hunger = beverages[n][4]
-	local num_thirst = beverages[n][5]
-	local alcohol = beverages[n][6]
-
-	wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcohol)
-end
-
-
--- brandy recipe
-minetest.register_craft({
-	type = "cooking",
-	cooktime = 15,
-	output = "wine:glass_brandy",
-	recipe = "wine:glass_wine"
-})
-
--- Raw champagne alias
-minetest.register_alias("wine:glass_champagne_raw", "wine:glass_champagne")
-
--- override to add food group to wine and brandy glass
-minetest.override_item("wine:glass_wine", {
-	groups = {
-		food_wine = 1, vessel = 1, dig_immediate = 3,
-		attached_node = 1, alcohol = 1, drink = 1
-	}
-})
-
-minetest.override_item("wine:glass_brandy", {
-	groups = {
-		food_brandy = 1, vessel = 1, dig_immediate = 3,
-		attached_node = 1, alcohol = 1, drink = 1
-	}
-})
-
-
--- blue agave
-minetest.register_node("wine:blue_agave", {
-	description = S("Blue Agave"),
-	drawtype = "plantlike",
-	visual_scale = 0.8,
-	tiles = {"wine_blue_agave.png"},
-	inventory_image = "wine_blue_agave.png",
-	wield_image = "wine_blue_agave.png",
-	paramtype = "light",
-	is_ground_content = false,
-	sunlight_propagates = true,
-	walkable = false,
-	selection_box = {
-		type = "fixed",
-		fixed = {-0.2, -0.5, -0.2, 0.2, 0.3, 0.2}
-	},
-	groups = {snappy = 3, attached_node = 1, plant = 1},
-	sounds = snd_l,
-
-	on_use = minetest.item_eat(2),
-
-	on_construct = function(pos)
-
-		local timer = minetest.get_node_timer(pos)
-
-		timer:start(17)
-	end,
-
-	on_timer = function(pos)
-
-		local light = minetest.get_node_light(pos)
-
-		if not light or light < 13 or math.random() > 1/76 then
-			return true -- go to next iteration
-		end
-
-		local n = minetest.find_nodes_in_area_under_air(
-			{x = pos.x + 2, y = pos.y + 1, z = pos.z + 2},
-			{x = pos.x - 2, y = pos.y - 1, z = pos.z - 2},
-			{"wine:blue_agave"})
-
-		-- too crowded, we'll wait for another iteration
-		if #n > 2 then
-			return true
-		end
-
-		-- find desert sand with air above (grow across and down only)
-		n = minetest.find_nodes_in_area_under_air(
-			{x = pos.x + 1, y = pos.y - 1, z = pos.z + 1},
-			{x = pos.x - 1, y = pos.y - 2, z = pos.z - 1},
-			{sand})
-
-		-- place blue agave
-		if n and #n > 0 then
-
-			local new_pos = n[math.random(#n)]
-
-			new_pos.y = new_pos.y + 1
-
-			minetest.set_node(new_pos, {name = "wine:blue_agave"})
-		end
-
-		return true
-	end
-})
-
-
--- blue agave into cyan dye
-minetest.register_craft( {
-	output = "dye:cyan 4",
-	recipe = {{"wine:blue_agave"}}
-})
-
--- blue agave as fuel
-minetest.register_craft({
-	type = "fuel",
-	recipe = "wine:blue_agave",
-	burntime = 10,
-})
-
--- cook blue agave into a sugar syrup
-minetest.register_craftitem("wine:agave_syrup", {
-	description = "Agave Syrup",
-	inventory_image = "wine_agave_syrup.png",
-	groups = {food_sugar = 1, vessel = 1, flammable = 3}
-})
-
-minetest.register_craft({
-	type = "cooking",
-	cooktime = 7,
-	output = "wine:agave_syrup 2",
-	recipe = "wine:blue_agave"
-})
-
--- blue agave into paper
-minetest.register_craft( {
-	output = "default:paper 3",
-	recipe = {
-		{"wine:blue_agave", "wine:blue_agave", "wine:blue_agave"}
-	}
-})
-
-
--- register blue agave on mapgen
-minetest.register_decoration({
-	deco_type = "simple",
-	place_on = {sand},
-	sidelen = 16,
-	fill_ratio = 0.001,
-	biomes = {"desert"},
-	decoration = {"wine:blue_agave"},
-	y_min = 15,
-	y_max = 50,
-	spawn_by = sand,
-	num_spawn_by = 6
-})
-
-
--- add to bonemeal as decoration if available
-if minetest.get_modpath("bonemeal") then
-
-	bonemeal:add_deco({
-		{sand, {}, {"default:dry_shrub", "wine:blue_agave", "", ""} }
-	})
-end
-
-
--- Mint Julep recipe
-if minetest.get_modpath("farming")
-and farming.mod and (farming.mod == "redo" or farming.mod == "undo") then
-
-	minetest.register_craft({
-		output = "wine:glass_mint",
-		recipe = {
-			{"farming:mint_leaf", "farming:mint_leaf", "farming:mint_leaf"},
-			{"wine:glass_bourbon", "farming:sugar", ""}
-		}
-	})
 end
 
 
@@ -574,11 +343,6 @@ minetest.register_node("wine:wine_barrel", {
 
 			recipe = ferment[n]
 
-			-- convert any old string recipe to table
-			if type(recipe[1]) == "string" then
-				recipe = {{recipe[1]}, recipe[2]}
-			end
-
 			-- check for first recipe item
 			if inv:contains_item("src", ItemStack(recipe[1][1])) then
 
@@ -656,8 +420,8 @@ minetest.register_craft({
 	recipe = {
 		{"group:wood", "group:wood", "group:wood"},
 		{ingot, "", ingot},
-		{"group:wood", "group:wood", "group:wood"},
-	},
+		{"group:wood", "group:wood", "group:wood"}
+	}
 })
 
 
@@ -667,65 +431,20 @@ minetest.register_lbm({
 	nodenames = {"wine:wine_barrel"},
 	run_at_every_load = false,
 	action = function(pos)
-
-		local t = minetest.get_node_timer(pos)
-
-		t:start(5)
+		minetest.get_node_timer(pos):start(5)
 	end
 })
 
-minetest.register_lbm({
-	name = "wine:agave_timer_init",
-	nodenames = {"wine:blue_agave"},
-	run_at_every_load = false,
-	action = function(pos)
 
-		local t = minetest.get_node_timer(pos)
+-- add agave plant and functions
+dofile(path .. "/agave.lua")
 
-		t:start(17)
-	end
-})
-
+-- add drink nodes and recipes
+dofile(path .. "/drinks.lua")
 
 -- add lucky blocks
 if minetest.get_modpath("lucky_block") then
-
-	lucky_block:add_blocks({
-		{"fal", {"default:water_source"}, 1, true, 4},
-		{"dro", {"wine:glass_wine"}, 5},
-		{"dro", {"wine:glass_beer"}, 5},
-		{"dro", {"wine:glass_wheat_beer"}, 5},
-		{"dro", {"wine:glass_mead"}, 5},
-		{"dro", {"wine:glass_cider"}, 5},
-		{"dro", {"wine:glass_rum"}, 5},
-		{"dro", {"wine:glass_sake"}, 5},
-		{"dro", {"wine:glass_tequila"}, 5},
-		{"dro", {"wine:glass_bourbon"}, 5},
-		{"dro", {"wine:glass_vodka"}, 5},
-		{"dro", {"wine:glass_mint"}, 5},
-		{"dro", {"wine:glass_coffee_liquor"}, 5},
-		{"dro", {"wine:glass_brandy"}, 5},
-		{"dro", {"wine:glass_champagne"}, 5},
-		{"dro", {"wine:wine_barrel"}, 1},
-		{"tel", 5, 1},
-		{"nod", "default:chest", 0, {
-			{name = "wine:bottle_wine", max = 1},
-			{name = "wine:bottle_tequila", max = 1},
-			{name = "wine:bottle_rum", max = 1},
-			{name = "wine:bottle_cider", max = 1},
-			{name = "wine:bottle_bourbon", max = 1},
-			{name = "wine:bottle_vodka", max = 1},
-			{name = "wine:wine_barrel", max = 1},
-			{name = "wine:bottle_sake", max = 1},
-			{name = "wine:bottle_mint", max = 1},
-			{name = "wine:bottle_mead", max = 1},
-			{name = "wine:bottle_beer", max = 1},
-			{name = "wine:bottle_wheat_beer", max = 1},
-			{name = "wine:bottle_coffee_liquor", max = 1},
-			{name = "wine:bottle_brandy", max = 1},
-			{name = "wine:bottle_champagne", max = 1},
-			{name = "wine:blue_agave", max = 4}}},
-	})
+	dofile(path .. "/lucky_block.lua")
 end
 
 

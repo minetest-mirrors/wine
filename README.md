@@ -29,7 +29,7 @@ re-arranged code, tweaked lucky blocks, updated translations
 - 1.8 - Added glass and bottles for Champagne, Brandy and Coffee Liquor (thanks Felfa)
 - 1.9 - Added wine:add_drink() function to create drink glasses and bottles
 - 1.95 - Tweaked code to accept 2 item recipes, fixed mineclone2 rum recipe and ui recipes
-- 1.98 - New formspec textures by Sirrobzeroone
+- 1.98 - New formspec textures and Kefir drink by Sirrobzeroone
 
 Lucky Blocks: 18
 
@@ -54,6 +54,7 @@ e.g.
 
 wine:add_drink("beer", "Beer", true, 2, 8, 1)
 wine:add_drink("cider", "Cider", true, 2, 6, 1)
+wine:add_drink("kefir", "Kefir", true, 4, 4, 0) -- non alcoholic
 
 
 Note:
