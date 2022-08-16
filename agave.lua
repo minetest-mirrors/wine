@@ -1,8 +1,5 @@
 
 -- check available mods for default sound and sand node
-local def = minetest.get_modpath("default")
-local mcl = minetest.get_modpath("mcl_core")
-
 local sand = "default:desert_sand"
 local snd_l = def and default.node_sound_leaves_defaults()
 
