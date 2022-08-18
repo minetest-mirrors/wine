@@ -234,7 +234,7 @@ minetest.register_node("wine:wine_barrel", {
 		inv:set_size("dst", 1) -- brewed item
 	end,
 
-	-- punch barrel to change old 1x slot barrels into 2x slot
+	-- punch barrel to change old 1x slot barrels into 4x slots and add a little water
 	on_punch = function(pos, node, puncher, pointed_thing)
 
 		local meta = minetest.get_meta(pos)
@@ -244,6 +244,8 @@ minetest.register_node("wine:wine_barrel", {
 		if size and size < 4 then
 			inv:set_size("src", 4)
 			inv:set_size("src_b", 1)
+			meta:set_int("water", 50)
+			meta:set_string("formspec", winebarrel_formspec(0, "", 50))
 		end
 	end,
 
