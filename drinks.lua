@@ -1,4 +1,3 @@
-
 -- add all drinks even if mods to brew them aren't active
 wine:add_drink("wine", "Wine", true, 2, 5, 1)
 wine:add_drink("beer", "Beer", true, 2, 8, 1)

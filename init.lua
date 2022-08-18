@@ -4,6 +4,7 @@ local path = minetest.get_modpath("wine")
 local def = minetest.get_modpath("default")
 local snd_d = def and default.node_sound_defaults()
 local snd_g = def and default.node_sound_glass_defaults()
+local glass_item = def and "default:glass"
 
 
 -- check for MineClone2
@@ -12,6 +13,7 @@ local mcl = minetest.get_modpath("mcl_core")
 if mcl then
 	snd_d = mcl_sounds.node_sound_glass_defaults()
 	snd_g = mcl_sounds.node_sound_defaults()
+	glass_item = "mcl_core:glass"
 end
 
 
@@ -54,7 +56,7 @@ if is_uninv then
 		description = "Barrel",
 		icon = "wine_barrel.png",
 		width = 2,
-		height = 1
+		height = 2
 	})
 end
 
@@ -72,7 +74,7 @@ function wine:add_item(list)
 
 		-- change old string recipe item into table
 		if type(item[1]) == "string" then
-			item = { {item[1]}, item[2] }
+			item = { {item[1], "vessels:drinking_glass"}, item[2] }
 		end
 
 		table.insert(ferment, item)
@@ -114,6 +116,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			attached_node = 1, drink = 1, alcohol = alcoholic
 		},
 		sounds = snd_g,
+
 		on_use = function(itemstack, user, pointed_thing)
 
 			if user then
@@ -122,7 +125,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 					thirsty.drink(user, num_thirst)
 				end
 
-				return minetest.do_item_eat(num_hunger, nil,
+				return minetest.do_item_eat(num_hunger, "vessels:drinking_glass",
 						itemstack, user, pointed_thing)
 			end
 		end
@@ -168,21 +171,36 @@ end
 
 
 -- Wine barrel formspec
-local function winebarrel_formspec(item_percent, brewing)
+local function winebarrel_formspec(item_percent, brewing, water_percent)
 
 	return "size[8,9]"
-	.. "image[0.25,0.5;5.5,4.25;wine_barrel_fs_bg.png]"
-	.. "list[current_name;src;1.55,1.8;2,1;]"
-	.. "list[current_name;dst;6.5,1.8;1,1;]"
+	.. "image[0,0;7,5;wine_barrel_fs_bg.png]"
+	.. "list[current_name;src;1.9,0.7;2,2;]"
+	.. "list[current_name;dst;7,1.8;1,1;]"
 	.. "list[current_player;main;0,5;8,4;]"
 	.. "listring[current_name;dst]"
 	.. "listring[current_player;main]"
 	.. "listring[current_name;src]"
 	.. "listring[current_player;main]"
-	.. "image[5.2,1.8;1,1;wine_barrel_icon_bg.png^[lowpart:"
+	.. "image[5.88,1.8;1,1;wine_barrel_icon_bg.png^[lowpart:"
 	.. item_percent .. ":wine_barrel_icon.png]"
-	.. "tooltip[5,1.8;1,1;" .. brewing .. "]"
+	.. "tooltip[5.88,1.8;1,1;" .. brewing .. "]"
+	.. "image[1.04,2.7;4.45,1.65;wine_barrel_water.png"
+	.. "^[colorize:#261c0e:175^[opacity:125"
+	.. "^[lowpart:" .. water_percent .. ":wine_barrel_water.png]"
+	.. "list[current_name;src_b;2.4,2.95;1,1;0]"
+	.. "tooltip[1.05,2.7;3.495,1.45;" .. S("Water @1% Full", water_percent) .. "]"
 end
+
+
+-- list of buckets used to fill barrel
+local bucket_list = {
+	{"bucket:bucket_water", "bucket:bucket_empty"},
+	{"bucket:bucket_river_water", "bucket:bucket_empty"},
+	{"bucket_wooden:bucket_water", "bucket_wooden:bucket_empty"},
+	{"bucket_wooden:bucket_river_water", "bucket_wooden:bucket_river_empty"},
+	{"mcl_buckets:bucket_water", "mcl_buckets:bucket_empty"}
+}
 
 
 -- Wine barrel node
@@ -205,14 +223,15 @@ minetest.register_node("wine:wine_barrel", {
 
 		local meta = minetest.get_meta(pos)
 
-		meta:set_string("formspec", winebarrel_formspec(0, ""))
+		meta:set_string("formspec", winebarrel_formspec(0, "", 0))
 		meta:set_string("infotext", S("Fermenting Barrel"))
-		meta:set_float("status", 0.0)
+		meta:set_float("status", 0)
 
 		local inv = meta:get_inventory()
 
-		inv:set_size("src", 2)
-		inv:set_size("dst", 1)
+		inv:set_size("src", 4) -- ingredients
+		inv:set_size("src_b", 1) -- water bucket
+		inv:set_size("dst", 1) -- brewed item
 	end,
 
 	-- punch barrel to change old 1x slot barrels into 2x slot
@@ -222,8 +241,9 @@ minetest.register_node("wine:wine_barrel", {
 		local inv = meta and meta:get_inventory()
 		local size = inv and inv:get_size("src")
 
-		if size and size == 1 then
-			inv:set_size("src", 2)
+		if size and size < 4 then
+			inv:set_size("src", 4)
+			inv:set_size("src_b", 1)
 		end
 	end,
 
@@ -249,8 +269,7 @@ minetest.register_node("wine:wine_barrel", {
 		return stack:get_count()
 	end,
 
-	allow_metadata_inventory_put = function(
-			pos, listname, index, stack, player)
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 
 		if minetest.is_protected(pos, player:get_player_name()) then
 			return 0
@@ -260,8 +279,39 @@ minetest.register_node("wine:wine_barrel", {
 		local inv = meta:get_inventory()
 
 		if listname == "src" then
+
 			return stack:get_count()
+
+		elseif listname == "src_b" then
+
+			local water = meta:get_int("water")
+
+			-- water full, return bucket
+			if water == 100 then
+				return 0
+			end
+
+			local is_water
+			local is_bucket = stack:get_name()
+
+			for _, def in ipairs(bucket_list) do
+
+				if def[1] == is_bucket then
+
+					is_water = true
+
+					break
+				end
+			end
+
+			if is_water then
+				return stack:get_count()
+			else
+				return 0
+			end
+
 		elseif listname == "dst" then
+
 			return 0
 		end
 	end,
@@ -279,16 +329,76 @@ minetest.register_node("wine:wine_barrel", {
 
 		if to_list == "src" then
 			return count
+
 		elseif to_list == "dst" then
 			return 0
 		end
 	end,
 
-	on_metadata_inventory_put = function(pos)
+	on_metadata_inventory_put = function(pos, listname, index, stack, player)
+
+		if listname == "src_b" then
+
+			local is_water = false
+			local meta = minetest.get_meta(pos)
+			local inv = meta:get_inventory()
+			local is_bucket = inv:get_stack("src_b", 1):get_name()
+			local def
+
+			for n = 1, #bucket_list do
+
+				def = bucket_list[n]
+
+				if def[1] == is_bucket then
+
+					is_water = true
+
+					break
+				end
+			end
+
+			if is_water then
+
+				local water = meta:get_int("water")
+
+				water = water + 20
+
+				if water > 100 then water = 100 end
+
+				inv:remove_item("src_b", def[1])
+				inv:add_item("src_b", def[2])
+
+				local status = meta:get_float("status")
+
+				meta:set_int("water", water)
+				meta:set_string("formspec",
+						winebarrel_formspec(status, "Water Added", water))
+			end
+		end
 
 		local timer = minetest.get_node_timer(pos)
 
-		timer:start(5)
+		if not timer:is_started() then
+			minetest.get_node_timer(pos):start(5)
+		end
+	end,
+
+	on_metadata_inventory_move = function(pos)
+
+		local timer = minetest.get_node_timer(pos)
+
+		if not timer:is_started() then
+			minetest.get_node_timer(pos):start(5)
+		end
+	end,
+
+	on_metadata_inventory_take = function(pos)
+
+		local timer = minetest.get_node_timer(pos)
+
+		if not timer:is_started() then
+			minetest.get_node_timer(pos):start(5)
+		end
 	end,
 
 	tube = (function() if minetest.get_modpath("pipeworks") then return {
@@ -326,45 +436,63 @@ minetest.register_node("wine:wine_barrel", {
 
 		local meta = minetest.get_meta(pos) ; if not meta then return end
 		local inv = meta:get_inventory()
+		local water = meta:get_int("water")
 
 		-- is barrel empty?
 		if not inv or inv:is_empty("src") then
 
-			meta:set_float("status", 0.0)
+			meta:set_float("status", 0)
 			meta:set_string("infotext", S("Fermenting Barrel"))
+			meta:set_string("formspec", winebarrel_formspec(0, "", water))
 
 			return false
 		end
 
 		-- does it contain any of the source items on the list?
-		local has_item, recipe
+		local has_items, recipe, item1, item2, item3, item4
 
 		for n = 1, #ferment do
 
 			recipe = ferment[n]
 
-			-- check for first recipe item
-			if inv:contains_item("src", ItemStack(recipe[1][1])) then
+			item1 = recipe[1][1] and ItemStack(recipe[1][1])
+			item2 = recipe[1][2] and ItemStack(recipe[1][2])
+			item3 = recipe[1][3] and ItemStack(recipe[1][3])
+			item4 = recipe[1][4] and ItemStack(recipe[1][4])
 
-				has_item = true
+			-- check for recipe items
+			if item1 then
 
-				-- check for second recipe item if required
-				if recipe[1][2] then
+				has_items = inv:contains_item("src", item1)
 
-					if inv:contains_item("src", ItemStack(recipe[1][2])) then
-						has_item = 2 -- used further on for item checks
-					else
-						has_item = false
+				if has_items and item2 then
+
+					has_items = inv:contains_item("src", item2)
+
+					if has_items and item3 then
+
+						has_items = inv:contains_item("src", item3)
+
+						if has_items and item4 then
+							has_items =  inv:contains_item("src", item4)
+						end
 					end
 				end
+			end
 
+			-- if we have all items in recipe break and continue
+			if has_items then
 				break
 			end
 		end
 
-		if not has_item then
+		-- if we have a wrong recipe change status
+		if not has_items then
 
 			meta:set_string("infotext", S("Fermenting Barrel") .. " (X)")
+			meta:set_float("status", 0)
+			meta:set_string("formspec",
+					winebarrel_formspec(0, S("No Valid Recipe"), water))
 
 			return false
 		end
@@ -380,26 +508,30 @@ minetest.register_node("wine:wine_barrel", {
 		local status = meta:get_float("status")
 
 		-- fermenting (change status)
-		if status < 100 then
+		if water > 0 and status < 100 then
 
 			meta:set_string("infotext", S("Fermenting Barrel (@1% Done)", status))
 			meta:set_float("status", status + 5)
 
 			local desc = minetest.registered_items[recipe[2]].description or ""
 
-			meta:set_string("formspec", winebarrel_formspec(status, S("Brewing: @1", desc)))
-		else
-			inv:remove_item("src", recipe[1][1])
+			meta:set_string("formspec", winebarrel_formspec(status,
+					S("Brewing: @1 (@2% Done)", desc, status), water))
 
-			-- remove 2nd recipe item if found
-			if has_item == 2 then
-				inv:remove_item("src", recipe[1][2])
-			end
+		elseif status == 100 then -- when we hit 100% remove items needed and add beverage
+
+			if item1 then inv:remove_item("src", item1) end
+			if item2 then inv:remove_item("src", item2) end
+			if item3 then inv:remove_item("src", item3) end
+			if item4 then inv:remove_item("src", item4) end
 
 			inv:add_item("dst", recipe[2])
 
-			meta:set_float("status", 0,0)
-			meta:set_string("formspec", winebarrel_formspec(0, ""))
+			water = water - 5
+
+			meta:set_float("status", 0)
+			meta:set_int("water", water)
+			meta:set_string("formspec", winebarrel_formspec(0, "", water))
 		end
 
 		if inv:is_empty("src") then
@@ -445,6 +577,37 @@ dofile(path .. "/drinks.lua")
 -- add lucky blocks
 if minetest.get_modpath("lucky_block") then
 	dofile(path .. "/lucky_block.lua")
+end
+
+
+-- mineclone2 doesn't have a drinking glass, so if none found add one
+if not minetest.registered_items["vessels:drinking_glass"] then
+
+	minetest.register_node(":vessels:drinking_glass", {
+		description = S("Empty Drinking Glass"),
+		drawtype = "plantlike",
+		tiles = {"wine_drinking_glass.png"},
+		inventory_image = "wine_drinking_glass.png",
+		wield_image = "wine_drinking_glass.png",
+		paramtype = "light",
+		is_ground_content = false,
+		walkable = false,
+		selection_box = {
+			type = "fixed",
+			fixed = {-0.25, -0.5, -0.25, 0.25, 0.3, 0.25}
+		},
+		groups = {vessel = 1, dig_immediate = 3, attached_node = 1},
+		sounds = snd_g,
+	})
+
+	minetest.register_craft( {
+		output = "vessels:drinking_glass 14",
+		recipe = {
+			{glass_item, "" , glass_item},
+			{glass_item, "" , glass_item},
+			{glass_item, glass_item, glass_item}
+		}
+	})
 end
 
 

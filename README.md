@@ -30,6 +30,7 @@ re-arranged code, tweaked lucky blocks, updated translations
 - 1.9 - Added wine:add_drink() function to create drink glasses and bottles
 - 1.95 - Tweaked code to accept 2 item recipes, fixed mineclone2 rum recipe and ui recipes
 - 1.98 - New formspec textures and Kefir drink by Sirrobzeroone
+- 1.99 - Barrel now has 4 slots for recipe items (and drinking glasses) and a water slot to fill up barrel with water buckets ready for fermenting.
 
 Lucky Blocks: 18
 
@@ -42,9 +43,12 @@ wine:add_item(item_table)
 e.g.
 
 wine:add_item({
+		-- simple recipe automatically add drinking glasses
 	{"farming:barley", "wine:glass_beer"},
-	{"default:apple 2", "wine:glass_cider"}, -- 2x apples make 1x glass cider
-	{{"default:apple", "farming:sugar"}, "wine:glass_sparkling_apple},
+		-- 2x apples make 1x glass cider
+	{"default:apple 2", "wine:glass_cider"},
+		-- specific recipe has to include drinking glass if needed
+	{{"default:apple", "farming:sugar", "vessels:drinking_glass"}, "wine:glass_sparkling_apple},
 })
 
 
