@@ -173,23 +173,35 @@ end
 -- Wine barrel formspec
 local function winebarrel_formspec(item_percent, brewing, water_percent)
 
-	return "size[8,9]"
+	local mcl_bg = mcl and "listcolors[#9d9d9d;#FFF7;#474747]" or ""
+
+	return "size[8,9]" .. mcl_bg
+
+	-- images
 	.. "image[0,0;7,5;wine_barrel_fs_bg.png]"
+	.. "image[5.88,1.8;1,1;wine_barrel_icon_bg.png^[lowpart:"
+	.. item_percent .. ":wine_barrel_icon.png]"
+	.. "image[1.04,2.7;4.45,1.65;wine_barrel_water.png"
+	.. "^[colorize:#261c0e:175^[opacity:125"
+	.. "^[lowpart:" .. water_percent .. ":wine_barrel_water.png]"
+
+	-- inside barrel tinv
 	.. "list[current_name;src;1.9,0.7;2,2;]"
+	.. "list[current_name;src_b;2.4,2.95;1,1;0]"
+
+	-- outside barrel inv
 	.. "list[current_name;dst;7,1.8;1,1;]"
 	.. "list[current_player;main;0,5;8,4;]"
+
+	-- tooltips
+	.. "tooltip[5.88,1.8;1,1;" .. brewing .. "]"
+	.. "tooltip[1.05,2.7;3.495,1.45;" .. S("Water @1% Full", water_percent) .. "]"
+
+	-- shift-click
 	.. "listring[current_name;dst]"
 	.. "listring[current_player;main]"
 	.. "listring[current_name;src]"
 	.. "listring[current_player;main]"
-	.. "image[5.88,1.8;1,1;wine_barrel_icon_bg.png^[lowpart:"
-	.. item_percent .. ":wine_barrel_icon.png]"
-	.. "tooltip[5.88,1.8;1,1;" .. brewing .. "]"
-	.. "image[1.04,2.7;4.45,1.65;wine_barrel_water.png"
-	.. "^[colorize:#261c0e:175^[opacity:125"
-	.. "^[lowpart:" .. water_percent .. ":wine_barrel_water.png]"
-	.. "list[current_name;src_b;2.4,2.95;1,1;0]"
-	.. "tooltip[1.05,2.7;3.495,1.45;" .. S("Water @1% Full", water_percent) .. "]"
 end
 
 
@@ -213,7 +225,7 @@ minetest.register_node("wine:wine_barrel", {
 	paramtype2 = "facedir",
 	groups = {
 		choppy = 2, oddly_breakable_by_hand = 1, flammable = 2,
-		tubedevice = 1, tubedevice_receiver = 1
+		tubedevice = 1, tubedevice_receiver = 1, axey = 1
 	},
 	legacy_facedir_simple = true,
 

@@ -1,4 +1,5 @@
 -- add all drinks even if mods to brew them aren't active
+-- (name, desc, has bottle, hunger, thirst, alcoholic)
 wine:add_drink("wine", "Wine", true, 2, 5, 1)
 wine:add_drink("beer", "Beer", true, 2, 8, 1)
 wine:add_drink("rum", "Rum", true, 2, 5, 1)
@@ -14,7 +15,10 @@ wine:add_drink("brandy", "Brandy", true, 3, 4, 1)
 wine:add_drink("coffee_liquor", "Coffee Liquor", true, 3, 4, 1)
 wine:add_drink("champagne", "Champagne", true, 4, 5, 1)
 wine:add_drink("kefir", "Kefir", true, 4, 4, 0)
-
+wine:add_drink("sparkling_agave_juice", "Sparkling Agave Juice", 2, 4, 0)
+wine:add_drink("sparkling_apple_juice", "Sparkling Apple Juice", 2, 5, 0)
+wine:add_drink("sparkling_carrot_juice", "Sparkling Carrot Juice", 3, 4, 0)
+wine:add_drink("sparkling_blackberry_juice", "Sparkling Blackberry Juice", 2, 4, 0)
 
 -- brandy recipe
 minetest.register_craft({
@@ -45,7 +49,13 @@ minetest.override_item("wine:glass_brandy", {
 
 
 -- wine mod adds tequila by default
-wine:add_item({ {"wine:blue_agave", "wine:glass_tequila"} })
+wine:add_item({
+	{
+		{"wine:agave_syrup", "wine:blue_agave", "vessels:drinking_glass"},
+		"wine:glass_sparkling_agave_juice"
+	},
+	{"wine:blue_agave", "wine:glass_tequila"}
+})
 
 -- default game
 if minetest.get_modpath("default") then
@@ -94,8 +104,20 @@ if minetest.get_modpath("farming") then
 			{"farming:rice", "wine:glass_sake"},
 			{"farming:corn", "wine:glass_bourbon"},
 			{"farming:baked_potato", "wine:glass_vodka"},
-			{"farming:coffee_beans", "wine:glass_coffee_liquor"},
-			{{"wine:glass_wine", "farming:sugar"}, "wine:glass_champagne"}
+			{{"wine:glass_rum", "farming:coffee_beans"}, "wine:glass_coffee_liquor"},
+			{{"wine:glass_wine", "farming:sugar"}, "wine:glass_champagne"},
+			{
+				{"default:apple", "farming:sugar", "vessels:drinking_glass"},
+				"wine:glass_sparkling_apple_juice"
+			},
+			{
+				{"farming:carrot", "farming:sugar", "vessels:drinking_glass"},
+				"wine:glass_sparkling_carrot_juice"
+			},
+			{
+				{"farming:blackberry 2", "farming:sugar", "vessels:drinking_glass"},
+				"wine:glass_sparkling_blackberry_juice"
+			}
 		})
 	end
 end
@@ -106,7 +128,15 @@ if minetest.get_modpath("mcl_core") then
 	wine:add_item({
 		{"mcl_core:apple", "wine:glass_cider"},
 		{"mcl_core:reeds", "wine:glass_rum"},
-		{"mcl_core:wheat_item", "wine:glass_wheat_beer"},
-		{"mcl_core:potato_item_baked", "wine:glass_vodka"}
+		{"mcl_farming:wheat_item", "wine:glass_wheat_beer"},
+		{"mcl_farming:potato_item_baked", "wine:glass_vodka"},
+		{
+			{"mcl_core:apple", "mcl_core:sugar", "vessels:drinking_glass"},
+			"wine:glass_sparkling_apple_juice"
+		},
+		{
+			{"mcl_farming:carrot_item", "mcl_core:sugar", "vessels:drinking_glass"},
+			"wine:glass_sparkling_carrot_juice"
+		},
 	})
 end

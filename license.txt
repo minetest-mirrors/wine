@@ -53,4 +53,12 @@ Textures by Sirrobzeroone (CC-by-3.0)
   wine_kefir_bottle.png
   wine_drinking_glass.png
   wine_barrel_water.png
+  wine_sparkling_agave_juice_glass.png
+  wine_sparkling_agave_juice_bottle.png
+  wine_sparkling_apple_juice_glass.png
+  wine_sparkling_apple_juice_bottle.png
+  wine_sparkling_blackberry_juice_glass.png
+  wine_sparkling_blackberry_juice_bottle.png
+  wine_sparkling_carrot_juice_glass.png
+  wine_sparkling_carrot_juice_bottle.png
   screenshot.png
