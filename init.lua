@@ -207,12 +207,25 @@ end
 
 -- list of buckets used to fill barrel
 local bucket_list = {
-	{"bucket:bucket_water", "bucket:bucket_empty"},
-	{"bucket:bucket_river_water", "bucket:bucket_empty"},
-	{"bucket_wooden:bucket_water", "bucket_wooden:bucket_empty"},
-	{"bucket_wooden:bucket_river_water", "bucket_wooden:bucket_river_empty"},
-	{"mcl_buckets:bucket_water", "mcl_buckets:bucket_empty"}
+	{"bucket:bucket_water", "bucket:bucket_empty", 20},
+	{"bucket:bucket_river_water", "bucket:bucket_empty", 20},
+	{"bucket_wooden:bucket_water", "bucket_wooden:bucket_empty", 20},
+	{"bucket_wooden:bucket_river_water", "bucket_wooden:bucket_river_empty", 20},
+	{"mcl_buckets:bucket_water", "mcl_buckets:bucket_empty", 20},
+	{"farming:glass_water", "vessels:drinking_glass", 5}
 }
+
+
+-- water item helper
+local function water_check(item)
+
+	for n = 1, #bucket_list do
+
+		if bucket_list[n][1] == item then
+			return bucket_list[n]
+		end
+	end
+end
 
 
 -- Wine barrel node
@@ -246,7 +259,7 @@ minetest.register_node("wine:wine_barrel", {
 		inv:set_size("dst", 1) -- brewed item
 	end,
 
-	-- punch barrel to change old 1x slot barrels into 4x slots and add a little water
+	-- punch old barrel to change to new 4x slot variant and add a little water
 	on_punch = function(pos, node, puncher, pointed_thing)
 
 		local meta = minetest.get_meta(pos)
@@ -254,8 +267,10 @@ minetest.register_node("wine:wine_barrel", {
 		local size = inv and inv:get_size("src")
 
 		if size and size < 4 then
+
 			inv:set_size("src", 4)
 			inv:set_size("src_b", 1)
+
 			meta:set_int("water", 50)
 			meta:set_string("formspec", winebarrel_formspec(0, "", 50))
 		end
@@ -267,7 +282,8 @@ minetest.register_node("wine:wine_barrel", {
 		local inv = meta:get_inventory()
 
 		if not inv:is_empty("dst")
-		or not inv:is_empty("src") then
+		or not inv:is_empty("src")
+		or not inv:is_empty("src_b") then
 			return false
 		end
 
@@ -300,23 +316,13 @@ minetest.register_node("wine:wine_barrel", {
 
 			local water = meta:get_int("water")
 
-			-- water full, return bucket
+			-- water full, return item
 			if water == 100 then
 				return 0
 			end
 
-			local is_water
 			local is_bucket = stack:get_name()
-
-			for _, def in ipairs(bucket_list) do
-
-				if def[1] == is_bucket then
-
-					is_water = true
-
-					break
-				end
-			end
+			local is_water = water_check(is_bucket)
 
 			if is_water then
 				return stack:get_count()
@@ -356,34 +362,22 @@ minetest.register_node("wine:wine_barrel", {
 
 		if listname == "src_b" then
 
-			local is_water = false
 			local meta = minetest.get_meta(pos)
 			local inv = meta:get_inventory()
 			local is_bucket = inv:get_stack("src_b", 1):get_name()
-			local def
-
-			for n = 1, #bucket_list do
-
-				def = bucket_list[n]
-
-				if def[1] == is_bucket then
-
-					is_water = true
-
-					break
-				end
-			end
+			local is_water = water_check(is_bucket)
 
 			if is_water then
 
 				local water = meta:get_int("water")
+				local amount = tonumber(is_water[3]) or 0
 
-				water = water + 20
+				water = water + amount
 
 				if water > 100 then water = 100 end
 
-				inv:remove_item("src_b", def[1])
-				inv:add_item("src_b", def[2])
+				inv:remove_item("src_b", is_water[1])
+				inv:add_item("src_b", is_water[2])
 
 				local status = meta:get_float("status")
 

@@ -47,7 +47,6 @@ minetest.override_item("wine:glass_brandy", {
 	}
 })
 
-
 -- wine mod adds tequila by default
 wine:add_item({
 	{
@@ -56,15 +55,6 @@ wine:add_item({
 	},
 	{"wine:blue_agave", "wine:glass_tequila"}
 })
-
--- default game
-if minetest.get_modpath("default") then
-
-	wine:add_item({
-		{"default:apple", "wine:glass_cider"},
-		{"default:papyrus", "wine:glass_rum"}
-	})
-end
 
 -- xdecor
 if minetest.get_modpath("xdecor") then
@@ -122,6 +112,15 @@ if minetest.get_modpath("farming") then
 	end
 end
 
+-- default game
+if minetest.get_modpath("default") then
+
+	wine:add_item({
+		{"default:apple", "wine:glass_cider"},
+		{"default:papyrus", "wine:glass_rum"}
+	})
+end
+
 -- mineclone2
 if minetest.get_modpath("mcl_core") then
 
@@ -137,6 +136,6 @@ if minetest.get_modpath("mcl_core") then
 		{
 			{"mcl_farming:carrot_item", "mcl_core:sugar", "vessels:drinking_glass"},
 			"wine:glass_sparkling_carrot_juice"
-		},
+		}
 	})
 end

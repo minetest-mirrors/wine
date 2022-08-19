@@ -34,10 +34,7 @@ minetest.register_node("wine:blue_agave", {
 	on_use = minetest.item_eat(2),
 
 	on_construct = function(pos)
-
-		local timer = minetest.get_node_timer(pos)
-
-		timer:start(17)
+		minetest.get_node_timer(pos):start(17)
 	end,
 
 	on_timer = function(pos)
