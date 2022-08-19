@@ -346,6 +346,9 @@ minetest.register_node("wine:wine_barrel", {
 
 		elseif to_list == "dst" then
 			return 0
+
+		elseif to_list == "src_b" then
+			return 0
 		end
 	end,
 
