@@ -447,7 +447,7 @@ minetest.register_node("wine:wine_barrel", {
 
 		local meta = minetest.get_meta(pos) ; if not meta then return end
 		local inv = meta:get_inventory()
-		local water = meta:get_int("water")
+		local water = meta:get_int("water") or 0
 
 		-- is barrel empty?
 		if not inv or inv:is_empty("src") then
@@ -455,6 +455,17 @@ minetest.register_node("wine:wine_barrel", {
 			meta:set_float("status", 0)
 			meta:set_string("infotext", S("Fermenting Barrel"))
 			meta:set_string("formspec", winebarrel_formspec(0, "", water))
+
+			return false
+		end
+
+		-- check water level
+		if water < 5 then
+
+			meta:set_string("infotext", S("Fermenting Barrel (Water Level Low)"))
+			meta:set_float("status", 0)
+			meta:set_string("formspec", winebarrel_formspec(0,
+					S("Water Level Low"), water))
 
 			return false
 		end
@@ -500,7 +511,7 @@ minetest.register_node("wine:wine_barrel", {
 		-- if we have a wrong recipe change status
 		if not has_items then
 
-			meta:set_string("infotext", S("Fermenting Barrel") .. " (X)")
+			meta:set_string("infotext", S("Fermenting Barrel") .. " (No Valid Recipe)")
 			meta:set_float("status", 0)
 			meta:set_string("formspec",
 					winebarrel_formspec(0, S("No Valid Recipe"), water))
@@ -511,15 +522,17 @@ minetest.register_node("wine:wine_barrel", {
 		-- is there room for additional fermentation?
 		if not inv:room_for_item("dst", recipe[2]) then
 
-			meta:set_string("infotext", S("Fermenting Barrel (FULL)"))
+			meta:set_string("infotext", S("Fermenting Barrel (Output Full)"))
+			meta:set_string("formspec",
+					winebarrel_formspec(0, S("Output Full"), water))
 
-			return true
+			return false
 		end
 
 		local status = meta:get_float("status")
 
 		-- fermenting (change status)
-		if water > 0 and status < 100 then
+		if status < 100 then
 
 			meta:set_string("infotext", S("Fermenting Barrel (@1% Done)", status))
 			meta:set_float("status", status + 5)
@@ -529,7 +542,7 @@ minetest.register_node("wine:wine_barrel", {
 			meta:set_string("formspec", winebarrel_formspec(status,
 					S("Brewing: @1 (@2% Done)", desc, status), water))
 
-		elseif status == 100 then -- when we hit 100% remove items needed and add beverage
+		else -- when we hit 100% remove items needed and add beverage
 
 			if item1 then inv:remove_item("src", item1) end
 			if item2 then inv:remove_item("src", item2) end
