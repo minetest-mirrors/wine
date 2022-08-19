@@ -32,7 +32,7 @@ re-arranged code, tweaked lucky blocks, updated translations
 - 1.98 - New formspec textures and Kefir drink by Sirrobzeroone
 - 1.99 - Barrel now has 4 slots for recipe items (and drinking glasses) and a water slot to fill up barrel with water buckets ready for fermenting, fix mineclone2 compatibility
 
-Lucky Blocks: 18
+Lucky Blocks: 22
 
 
 Wine Mod API
