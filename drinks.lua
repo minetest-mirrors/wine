@@ -56,6 +56,15 @@ wine:add_item({
 	{"wine:blue_agave", "wine:glass_tequila"}
 })
 
+-- default game
+if minetest.get_modpath("default") then
+
+	wine:add_item({
+		{"default:apple", "wine:glass_cider"},
+		{"default:papyrus", "wine:glass_rum"}
+	})
+end
+
 -- xdecor
 if minetest.get_modpath("xdecor") then
 
@@ -110,15 +119,6 @@ if minetest.get_modpath("farming") then
 			}
 		})
 	end
-end
-
--- default game
-if minetest.get_modpath("default") then
-
-	wine:add_item({
-		{"default:apple", "wine:glass_cider"},
-		{"default:papyrus", "wine:glass_rum"}
-	})
 end
 
 -- mineclone2
