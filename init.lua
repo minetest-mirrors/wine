@@ -210,8 +210,10 @@ end
 local bucket_list = {
 	{"bucket:bucket_water", "bucket:bucket_empty", 20},
 	{"bucket:bucket_river_water", "bucket:bucket_empty", 20},
+	{"wooden_bucket:bucket_wood_water", "wooden_bucket:bucket_wood_empty", 20},
+	{"wooden_bucket:bucket_wood_river_water", "wooden_bucket:bucket_wood_empty", 20},
 	{"bucket_wooden:bucket_water", "bucket_wooden:bucket_empty", 20},
-	{"bucket_wooden:bucket_river_water", "bucket_wooden:bucket_river_empty", 20},
+	{"bucket_wooden:bucket_river_water", "bucket_wooden:bucket_empty", 20},
 	{"mcl_buckets:bucket_water", "mcl_buckets:bucket_empty", 20},
 	{"farming:glass_water", "vessels:drinking_glass", 5}
 }
