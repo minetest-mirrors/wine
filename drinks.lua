@@ -14,6 +14,8 @@ wine:add_drink("mint", "Mint Julep", true, 4, 3, 1)
 wine:add_drink("brandy", "Brandy", true, 3, 4, 1)
 wine:add_drink("coffee_liquor", "Coffee Liquor", true, 3, 4, 1)
 wine:add_drink("champagne", "Champagne", true, 4, 5, 1)
+wine:add_drink("cointreau", "Cointreau", true, 2, 3, 1)
+wine:add_drink("margarita", "Margarita", false, 4, 5, 1)
 wine:add_drink("kefir", "Kefir", true, 4, 4, 0)
 wine:add_drink("sparkling_agave_juice", "Sparkling Agave Juice", 2, 4, 0)
 wine:add_drink("sparkling_apple_juice", "Sparkling Apple Juice", 2, 5, 0)
@@ -119,6 +121,20 @@ if minetest.get_modpath("farming") then
 			}
 		})
 	end
+end
+
+-- ethereal
+if minetest.get_modpath("ethereal") then
+
+	wine:add_item({ {"ethereal:orange", "wine:glass_cointreau"} })
+
+	-- margarita recipe
+	minetest.register_craft({
+		output = "wine:glass_margarita 2",
+		recipe = {
+			{"wine:glass_cointreau", "wine:glass_tequila", "ethereal:lemon"}
+		}
+	})
 end
 
 -- mineclone2

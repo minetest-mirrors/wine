@@ -14,6 +14,8 @@ lucky_block:add_blocks({
 	{"dro", {"wine:glass_coffee_liquor"}, 5},
 	{"dro", {"wine:glass_brandy"}, 5},
 	{"dro", {"wine:glass_champagne"}, 5},
+	{"dro", {"wine:glass_cointreau"}, 5},
+	{"dro", {"wine:glass_margarita"}, 5},
 	{"dro", {"wine:glass_sparkling_agave_juice"}, 5},
 	{"dro", {"wine:glass_sparkling_apple_juice"}, 5},
 	{"dro", {"wine:glass_sparkling_carrot_juice"}, 5},
@@ -36,9 +38,11 @@ lucky_block:add_blocks({
 		{name = "wine:bottle_coffee_liquor", max = 1},
 		{name = "wine:bottle_brandy", max = 1},
 		{name = "wine:bottle_champagne", max = 1},
+		{name = "wine:bottle_cointreau", max = 1},
 		{name = "wine:bottle_sparkling_agave_juice", max = 1},
 		{name = "wine:bottle_sparkling_apple_juice", max = 1},
 		{name = "wine:bottle_sparkling_carrot_juice", max = 1},
 		{name = "wine:bottle_sparkling_blackberry_juice", max = 1},
-		{name = "wine:blue_agave", max = 4}}},
+		{name = "wine:blue_agave", max = 4}
+	}}
 })
