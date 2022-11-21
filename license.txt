@@ -22,11 +22,9 @@ THE SOFTWARE.
 
 Textures by TenPlus1 unless listed below (CC-By-3.0)
 
-Mikhail Miroscnichenko @ dreamstime.com (royalty free license)
-  wine_bourbon_bottle.png
-
-RiverKpocc @ deviantart.com
+Texture by Runs (CC4-BY-SA)
   wine_beer_glass.png
+  wine_bourbon_bottle.png
   wine_wheat_beer_glass.png
 
 Textures by Darkstalker (cc-by-3.0 license)
