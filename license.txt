@@ -25,6 +25,8 @@ Textures by TenPlus1 unless listed below (CC-By-3.0)
 Texture by Runs (CC4-BY-SA)
   wine_beer_glass.png
   wine_bourbon_bottle.png
+
+Texture by Epoxum (CC0)
   wine_wheat_beer_glass.png
 
 Textures by Darkstalker (cc-by-3.0 license)
