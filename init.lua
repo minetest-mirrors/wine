@@ -2,6 +2,7 @@ wine = {}
 
 local path = minetest.get_modpath("wine")
 local def = minetest.get_modpath("default")
+local pipe = minetest.get_modpath("pipeworks")
 local snd_d = def and default.node_sound_defaults()
 local snd_g = def and default.node_sound_glass_defaults()
 local glass_item = def and "default:glass"
@@ -415,7 +416,19 @@ minetest.register_node("wine:wine_barrel", {
 		end
 	end,
 
-	tube = (function() if minetest.get_modpath("pipeworks") then return {
+	pipe_connections = {
+		left = 1, right = 1, front = 1, back = 1,
+		left_param2 = 3, right_param2 = 1, front_param2 = 2, back_param2 = 0
+	},
+
+	after_dig_node = function(pos)
+
+		if pipe then
+			pipeworks.scan_for_pipe_objects(pos)
+		end
+	end,
+
+	tube = (function() if pipe then return {
 
 		-- using a different stack from defaut when inserting
 		insert_object = function(pos, node, stack, direction)
@@ -431,7 +444,7 @@ minetest.register_node("wine:wine_barrel", {
 			return inv:add_item("src", stack)
 		end,
 
-		can_insert = function(pos,node,stack,direction)
+		can_insert = function(pos, node, stack, direction)
 
 			local meta = minetest.get_meta(pos)
 			local inv = meta:get_inventory()
@@ -451,6 +464,19 @@ minetest.register_node("wine:wine_barrel", {
 		local meta = minetest.get_meta(pos) ; if not meta then return end
 		local inv = meta:get_inventory()
 		local water = meta:get_int("water") or 0
+
+		-- check for pipeworks water inlet
+		if pipe then
+
+			if minetest.find_node_near(pos, 1, pipeworks.pipes_full_nodenames) then
+
+				water = water + 20
+
+				if water > 100 then water = 100 end
+
+				meta:set_int("water", water)
+			end
+		end
 
 		-- is barrel empty?
 		if not inv or inv:is_empty("src") then
