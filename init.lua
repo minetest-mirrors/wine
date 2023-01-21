@@ -574,7 +574,8 @@ minetest.register_node("wine:wine_barrel", {
 			meta:set_string("infotext", txt)
 			meta:set_float("status", status + 5)
 
-			local desc = minetest.registered_items[recipe[2]].description or ""
+			local d1 = recipe[2]:split(" ")[1]
+			local desc = minetest.registered_items[d1].description or ""
 
 			txt = S("Brewing: @1", desc) .. " " .. S("(@1% Done)", status)
 
