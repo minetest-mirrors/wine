@@ -622,10 +622,28 @@ minetest.register_craft({
 
 -- LBMs to start timers on existing, ABM-driven nodes
 minetest.register_lbm({
-	name = "wine:barrel_timer_init",
+	name = "wine:barrel_timer_upgrade_init",
+	label = "upgrade old barrels and start timers",
 	nodenames = {"wine:wine_barrel"},
 	run_at_every_load = false,
+
 	action = function(pos)
+
+		-- convert any old 2x slot barrels into new 4x slot ones and add a little water
+		local meta = minetest.get_meta(pos)
+		local inv = meta and meta:get_inventory()
+		local size = inv and inv:get_size("src")
+
+		if size and size < 4 then
+
+			inv:set_size("src", 4)
+			inv:set_size("src_b", 1)
+
+			meta:set_int("water", 50)
+			meta:set_string("formspec", winebarrel_formspec(0, "", 50))
+		end
+
+		-- Start barrel timer
 		minetest.get_node_timer(pos):start(5)
 	end
 })
