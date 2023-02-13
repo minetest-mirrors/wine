@@ -75,10 +75,20 @@ minetest.register_node("wine:blue_agave", {
 
 
 -- blue agave into cyan dye
-minetest.register_craft( {
-	output = "dye:cyan 4",
-	recipe = {{"wine:blue_agave"}}
-})
+if minetest.get_modpath("mcl_dye") then
+
+	minetest.register_craft( {
+		output = "mcl_dye:cyan 4",
+		recipe = {{"wine:blue_agave"}}
+	})
+
+elseif minetest.get_modpath("dye") then
+
+	minetest.register_craft( {
+		output = "dye:cyan 4",
+		recipe = {{"wine:blue_agave"}}
+	})
+end
 
 -- blue agave as fuel
 minetest.register_craft({
