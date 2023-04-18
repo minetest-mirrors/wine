@@ -216,7 +216,10 @@ local bucket_list = {
 	{"bucket_wooden:bucket_water", "bucket_wooden:bucket_empty", 20},
 	{"bucket_wooden:bucket_river_water", "bucket_wooden:bucket_empty", 20},
 	{"mcl_buckets:bucket_water", "mcl_buckets:bucket_empty", 20},
-	{"farming:glass_water", "vessels:drinking_glass", 5}
+	{"farming:glass_water", "vessels:drinking_glass", 5},
+	{"default:water_source", "", 20},
+	{"default:river_water_source", "", 20},
+	{"mcl_core:water_source", "", 20}
 }
 
 
@@ -381,7 +384,11 @@ minetest.register_node("wine:wine_barrel", {
 				if water > 100 then water = 100 end
 
 				inv:remove_item("src_b", is_water[1])
-				inv:add_item("src_b", is_water[2])
+
+				-- if replacement found then add to inventory
+				if is_water[2] ~= "" then
+					inv:add_item("src_b", is_water[2])
+				end
 
 				local status = meta:get_float("status")
 
