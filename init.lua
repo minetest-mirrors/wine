@@ -473,7 +473,7 @@ minetest.register_node("wine:wine_barrel", {
 		local water = meta:get_int("water") or 0
 
 		-- check for pipeworks water inlet
-		if pipe then
+		if pipe and water < 100 then
 
 			if minetest.find_node_near(pos, 1, pipeworks.pipes_full_nodenames) then
 
