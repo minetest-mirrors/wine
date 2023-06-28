@@ -7,6 +7,7 @@ local snd_d = def and default.node_sound_defaults()
 local snd_g = def and default.node_sound_glass_defaults()
 local glass_item = def and "default:glass"
 local txt
+local pipes_list = pipe and pipeworks.pipes_full_nodenames or {"default:river_water_source"}
 
 
 -- check for MineClone2
@@ -472,10 +473,10 @@ minetest.register_node("wine:wine_barrel", {
 		local inv = meta:get_inventory()
 		local water = meta:get_int("water") or 0
 
-		-- check for pipeworks water inlet
-		if pipe and water < 100 then
+		-- check for pipeworks water inlet or well block
+		if water < 100 then
 
-			if minetest.find_node_near(pos, 1, pipeworks.pipes_full_nodenames) then
+			if minetest.find_node_near(pos, 1, pipes_list) then
 
 				water = water + 20
 
