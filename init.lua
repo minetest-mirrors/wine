@@ -32,8 +32,6 @@ local thirsty_mod = minetest.get_modpath("thirsty")
 local S
 if minetest.get_translator then
 	S = minetest.get_translator("wine")
-elseif minetest.get_modpath("intllib") then
-	S = intllib.Getter()
 else
 	S = function(s, a, ...)
 		if a == nil then
