@@ -79,7 +79,7 @@ or minetest.get_modpath("xanadu") then
 
 	wine:add_item({
 		{"mobs:honey", "wine:glass_mead"},
-		{"mobs:glass_milk", "wine:glass_kefir"}
+		{{"mobs:glass_milk", "farming:wheat"}, "wine:glass_kefir"}
 	})
 end
 
