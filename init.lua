@@ -218,7 +218,23 @@ local bucket_list = {
 	{"farming:glass_water", "vessels:drinking_glass", 5},
 	{"default:water_source", "", 20},
 	{"default:river_water_source", "", 20},
-	{"mcl_core:water_source", "", 20}
+	{"mcl_core:water_source", "", 20},
+	{"bucket:bucket_water_uni_gold", "bucket:bucket_empty_gold", 20},
+	{"bucket:bucket_water_uni_mese", "bucket:bucket_empty_mese", 20},
+	{"bucket:bucket_water_uni_wood", "bucket:bucket_empty_wood", 20},
+	{"bucket:bucket_water_uni_steel", "bucket:bucket_empty_steel", 20},
+	{"bucket:bucket_water_uni_stone", "bucket:bucket_empty_stone", 20},
+	{"bucket:bucket_water_uni_bronze", "bucket:bucket_empty_bronze", 20},
+	{"bucket:bucket_water_uni_diamond", "bucket:bucket_empty_diamond", 20},
+	{"bucket:bucket_water_river_gold", "bucket:bucket_empty_gold", 20},
+	{"bucket:bucket_water_river_mese", "bucket:bucket_empty_mese", 20},
+	{"bucket:bucket_water_river_wood", "bucket:bucket_empty_wood", 20},
+	{"bucket:bucket_water_river_steel", "bucket:bucket_empty_steel", 20},
+	{"bucket:bucket_water_river_stone", "bucket:bucket_empty_stone", 20},
+	{"bucket:bucket_water_river_bronze", "bucket:bucket_empty_bronze", 20},
+	{"bucket:bucket_water_river_diamond", "bucket:bucket_empty_diamond", 20},
+	{"mesecraft_bucket:bucket_water", "mesecraft_bucket:bucket_empty", 20},
+	{"mesecraft_bucket:bucket_river_water", "mesecraft_bucket:bucket_empty", 20}
 }
 
 
