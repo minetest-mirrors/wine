@@ -1,7 +1,7 @@
 # Traduction Française du mod Wine par TenPlus1
 # textdomain: wine
 # author: TheDarkTiger
-# last update: 2022/August/20
+# last update: 2023/Oct/06
 
 Glass of Wine=Verre de Vin
 Bottle of Wine=Bouteille de Vin
@@ -25,6 +25,19 @@ Glass of Honey-Mead=Hydromel
 Bottle of Honey-Mead=Bouteille d'Hydromel
 Glass of Mint Julep=Mint Julep
 Bottle of Mint Julep=Bouteille de Mint Julep
+Glass of Brandy=Verre de Brandy
+Bottle of Brandy=Bouteille de Brandy
+Glass of Coffee Liquor=Verre de liqueur de café
+Bottle of Coffee Liquor=Bouteille de liqueur de café
+Glass of Champagne=Verre de Champagne
+Bottle of Champagne=Bouteille de Champagne
+Glass of Cointreau=Verre de Cointreau
+Bottle of Cointreau=Bouteille de Cointreau
+Glass of Margarita=Verre de margarita
+Bottle of Margarita=Bouteille de margarita
+Glass of Kefir=Verre de kéfir
+Bottle of Kefir=Bouteille de kéfir
+
 Glass of Sparkling Agave Juice=Verre de jus d'agave pétillant
 Bottle of Sparkling Agave Juice=Bouteille de jus d'agave pétillant
 Glass of Sparkling Apple Juice=Verre de jus de pomme pétillant
@@ -33,10 +46,10 @@ Glass of Sparkling Carrot Juice=Verre de jus de carotte pétillant
 Bottle of Sparkling Carrot Juice=Bouteille de jus de carotte pétillant
 Glass of Sparkling Blackberry Juice=Verre de jus de mûre pétillant
 Bottle of Sparkling Blackberry Juice=Bouteille de jus de mûre pétillant
-Glass of Kefir=Verre de kéfir
-Bottle of Kefir=Bouteille de kéfir
+
 Blue Agave=Agave Bleue
 Agave Syrup=Sirop d'Agave
+
 Fermenting Barrel=Baril de fermentation
 Brewing: @1=Sortie pleine: @1
 Water @1% Full=l'eau @1 rempli
