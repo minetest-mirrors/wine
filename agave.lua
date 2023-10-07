@@ -99,7 +99,7 @@ minetest.register_craft({
 
 -- cook blue agave into a sugar syrup
 minetest.register_craftitem("wine:agave_syrup", {
-	description = "Agave Syrup",
+	description = S("Agave Syrup"),
 	inventory_image = "wine_agave_syrup.png",
 	groups = {food_sugar = 1, vessel = 1, flammable = 3}
 })
