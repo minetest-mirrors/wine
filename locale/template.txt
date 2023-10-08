@@ -1,8 +1,4 @@
-# Template for translations of wine mod
 # textdomain: wine
-# author: ?
-# last update: 2020/October/27
-
 Glass of Wine=
 Bottle of Wine=
 Glass of Beer=
