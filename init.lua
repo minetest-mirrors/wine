@@ -142,6 +142,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			tiles = {"wine_" .. name .. "_bottle.png"},
 			inventory_image = "wine_" .. name .. "_bottle.png",
 			paramtype = "light",
+			is_ground_content = false,
 			sunlight_propagates = true,
 			walkable = false,
 			selection_box = {
@@ -258,6 +259,7 @@ minetest.register_node("wine:wine_barrel", {
 	mesh = "wine_barrel.obj",
 	paramtype = "light",
 	paramtype2 = "facedir",
+	is_ground_content = false,
 	groups = {
 		choppy = 2, oddly_breakable_by_hand = 1, flammable = 2,
 		tubedevice = 1, tubedevice_receiver = 1, axey = 1
