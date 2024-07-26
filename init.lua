@@ -69,13 +69,34 @@ function wine:add_item(list)
 	end
 end
 
+-- helper function
+
+local mod_tt_base = minetest.get_modpath("tt_base")
+
+function wine.add_eatable(item, hp)
+
+	local def = minetest.registered_items[item]
+
+	if def then
+
+		local grps = def.groups or {}
+
+		grps.eatable = hp ; grps.flammable = 2
+
+		if mod_tt_base == nil then
+			def.description = def.description .. " (♥" .. hp .. ")"
+		end
+
+		minetest.override_item(item, {description = def.description, groups = grps})
+	end
+end
 
 -- add drink with bottle
 function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholic)
 
 	-- glass
 	minetest.register_node("wine:glass_" .. name, {
-		description = S("Glass of " .. desc) .. " (♥" .. num_hunger .. ")",
+		description = S("Glass of " .. desc),
 		drawtype = "plantlike",
 		visual_scale = 0.5,
 		tiles = {"wine_" .. name .. "_glass.png"},
@@ -90,7 +111,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			fixed = {-0.15, -0.5, -0.15, 0.15, 0, 0.15}
 		},
 		groups = {
-			vessel = 1, dig_immediate = 3, eatable = num_hunger,
+			vessel = 1, dig_immediate = 3,
 			attached_node = 1, drink = 1, alcohol = alcoholic
 		},
 		sounds = snd_g,
@@ -108,6 +129,8 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			end
 		end
 	})
+
+	wine.add_eatable("wine:glass_" .. name, num_hunger)
 
 	-- bottle
 	if has_bottle then
