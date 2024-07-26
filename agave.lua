@@ -14,7 +14,7 @@ local S = wine.S
 
 -- blue agave
 minetest.register_node("wine:blue_agave", {
-	description = S("Blue Agave"),
+	description = S("Blue Agave") .. " (♥2)",
 	drawtype = "plantlike",
 	visual_scale = 0.8,
 	tiles = {"wine_blue_agave.png"},
@@ -28,7 +28,7 @@ minetest.register_node("wine:blue_agave", {
 		type = "fixed",
 		fixed = {-0.2, -0.5, -0.2, 0.2, 0.3, 0.2}
 	},
-	groups = {snappy = 3, attached_node = 1, plant = 1},
+	groups = {snappy = 3, attached_node = 1, plant = 1, eatable = 2},
 	sounds = snd_l,
 
 	on_use = minetest.item_eat(2),

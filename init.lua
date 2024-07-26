@@ -19,36 +19,14 @@ if mcl then
 	glass_item = "mcl_core:glass"
 end
 
-
 -- check for Unified Inventory
 local is_uninv = minetest.global_exists("unified_inventory") or false
-
 
 -- is thirsty mod active
 local thirsty_mod = minetest.get_modpath("thirsty")
 
-
 -- translation support
-local S
-if minetest.get_translator then
-	S = minetest.get_translator("wine")
-else
-	S = function(s, a, ...)
-		if a == nil then
-			return s
-		end
-		a = {a, ...}
-		return s:gsub("(@?)@(%(?)(%d+)(%)?)", function(e, o, n, c)
-			if e == ""then
-				return a[tonumber(n)] .. (o == "" and c or "")
-			else
-				return "@" .. o .. n .. c
-			end
-		end)
-	end
-end
-wine.S = S
-
+local S = minetest.get_translator("wine") ; wine.S = S
 
 -- Unified Inventory hints
 if is_uninv then
@@ -60,7 +38,6 @@ if is_uninv then
 		height = 2
 	})
 end
-
 
 -- fermentation list (drinks added in drinks.lua)
 local ferment = {}
@@ -98,7 +75,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 
 	-- glass
 	minetest.register_node("wine:glass_" .. name, {
-		description = S("Glass of " .. desc),
+		description = S("Glass of " .. desc) .. " (♥" .. num_hunger .. ")",
 		drawtype = "plantlike",
 		visual_scale = 0.5,
 		tiles = {"wine_" .. name .. "_glass.png"},
@@ -113,7 +90,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			fixed = {-0.15, -0.5, -0.15, 0.15, 0, 0.15}
 		},
 		groups = {
-			vessel = 1, dig_immediate = 3,
+			vessel = 1, dig_immediate = 3, eatable = num_hunger,
 			attached_node = 1, drink = 1, alcohol = alcoholic
 		},
 		sounds = snd_g,
