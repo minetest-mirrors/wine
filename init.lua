@@ -100,8 +100,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 		sunlight_propagates = true,
 		walkable = false,
 		selection_box = {
-			type = "fixed",
-			fixed = {-0.15, -0.5, -0.15, 0.15, 0, 0.15}
+			type = "fixed", fixed = {-0.15, -0.5, -0.15, 0.15, 0, 0.15}
 		},
 		groups = {
 			vessel = 1, dig_immediate = 3,
@@ -139,8 +138,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			sunlight_propagates = true,
 			walkable = false,
 			selection_box = {
-				type = "fixed",
-				fixed = {-0.15, -0.5, -0.15, 0.15, 0.25, 0.15}
+				type = "fixed", fixed = {-0.15, -0.5, -0.15, 0.15, 0.25, 0.15}
 			},
 			groups = {dig_immediate = 3, attached_node = 1, vessel = 1},
 			sounds = snd_d,
@@ -259,7 +257,7 @@ minetest.register_node("wine:wine_barrel", {
 	},
 	legacy_facedir_simple = true,
 
-	on_place = minetest.rotate_node,
+	--on_place = minetest.rotate_node,
 
 	on_construct = function(pos)
 
