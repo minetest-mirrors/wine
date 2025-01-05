@@ -17,10 +17,10 @@ wine:add_drink("champagne", "Champagne", true, 4, 5, 1)
 wine:add_drink("cointreau", "Cointreau", true, 2, 3, 1)
 wine:add_drink("margarita", "Margarita", false, 4, 5, 1)
 wine:add_drink("kefir", "Kefir", true, 4, 4, 0)
-wine:add_drink("sparkling_agave_juice", "Sparkling Agave Juice", 2, 4, 0)
-wine:add_drink("sparkling_apple_juice", "Sparkling Apple Juice", 2, 5, 0)
-wine:add_drink("sparkling_carrot_juice", "Sparkling Carrot Juice", 3, 4, 0)
-wine:add_drink("sparkling_blackberry_juice", "Sparkling Blackberry Juice", 2, 4, 0)
+wine:add_drink("sparkling_agave_juice", "Sparkling Agave Juice", true, 2, 4, 0)
+wine:add_drink("sparkling_apple_juice", "Sparkling Apple Juice", true, 2, 5, 0)
+wine:add_drink("sparkling_carrot_juice", "Sparkling Carrot Juice", true, 3, 4, 0)
+wine:add_drink("sparkling_blackberry_juice", "Sparkling Blackberry Juice", true, 2, 4, 0)
 
 -- brandy recipe
 minetest.register_craft({
@@ -34,20 +34,14 @@ minetest.register_craft({
 minetest.register_alias("wine:glass_champagne_raw", "wine:glass_champagne")
 
 -- quick override to add wine to food group
-minetest.override_item("wine:glass_wine", {
-	groups = {
-		food_wine = 1, vessel = 1, dig_immediate = 3,
-		attached_node = 1, alcohol = 1, drink = 1
-	}
-})
+local def = minetest.registered_items["wine:glass_wine"]
+local grp = table.copy(def.groups) ; grp.food_wine = 1
+minetest.override_item("wine:glass_wine", {groups = grp})
 
 -- quick override to add brandy to food group
-minetest.override_item("wine:glass_brandy", {
-	groups = {
-		food_brandy = 1, vessel = 1, dig_immediate = 3,
-		attached_node = 1, alcohol = 1, drink = 1
-	}
-})
+def = minetest.registered_items["wine:glass_brandy"]
+grp = table.copy(def.groups) ; grp.food_brandy = 1
+minetest.override_item("wine:glass_brandy", {groups = grp})
 
 -- wine mod adds tequila by default
 wine:add_item({
