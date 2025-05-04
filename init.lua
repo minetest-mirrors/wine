@@ -1,8 +1,8 @@
 wine = {}
 
-local path = minetest.get_modpath("wine")
-local def = minetest.get_modpath("default")
-local pipe = minetest.get_modpath("pipeworks")
+local path = core.get_modpath("wine")
+local def = core.get_modpath("default")
+local pipe = core.get_modpath("pipeworks")
 local snd_d = def and default.node_sound_defaults()
 local snd_g = def and default.node_sound_glass_defaults()
 local glass_item = def and "default:glass"
@@ -11,7 +11,7 @@ local pipes_list = pipe and pipeworks.pipes_full_nodenames or {"default:river_wa
 
 
 -- check for MineClone2
-local mcl = minetest.get_modpath("mcl_core")
+local mcl = core.get_modpath("mcl_core")
 
 if mcl then
 	snd_d = mcl_sounds.node_sound_glass_defaults()
@@ -20,13 +20,13 @@ if mcl then
 end
 
 -- check for Unified Inventory
-local is_uninv = minetest.global_exists("unified_inventory") or false
+local is_uninv = core.global_exists("unified_inventory") or false
 
 -- is thirsty mod active
-local thirsty_mod = minetest.get_modpath("thirsty")
+local thirsty_mod = core.get_modpath("thirsty")
 
 -- translation support
-local S = minetest.get_translator("wine") ; wine.S = S
+local S = core.get_translator("wine") ; wine.S = S
 
 -- Unified Inventory hints
 if is_uninv then
@@ -72,7 +72,7 @@ end
 -- helper function
 function wine.add_eatable(item, hp)
 
-	local def = minetest.registered_items[item]
+	local def = core.registered_items[item]
 
 	if def then
 
@@ -80,7 +80,7 @@ function wine.add_eatable(item, hp)
 
 		groups.eatable = hp ; groups.flammable = 2
 
-		minetest.override_item(item, {groups = groups})
+		core.override_item(item, {groups = groups})
 	end
 end
 
@@ -88,7 +88,7 @@ end
 function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholic)
 
 	-- glass
-	minetest.register_node("wine:glass_" .. name, {
+	core.register_node("wine:glass_" .. name, {
 		description = S("Glass of " .. desc),
 		drawtype = "plantlike",
 		visual_scale = 0.5,
@@ -116,7 +116,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 					thirsty.drink(user, num_thirst)
 				end
 
-				return minetest.do_item_eat(num_hunger, "vessels:drinking_glass",
+				return core.do_item_eat(num_hunger, "vessels:drinking_glass",
 						itemstack, user, pointed_thing)
 			end
 		end
@@ -127,7 +127,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 	-- bottle
 	if has_bottle then
 
-		minetest.register_node("wine:bottle_" .. name, {
+		core.register_node("wine:bottle_" .. name, {
 			description = S("Bottle of " .. desc),
 			drawtype = "plantlike",
 			visual_scale = 0.7,
@@ -146,7 +146,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 
 		local glass = "wine:glass_" .. name
 
-		minetest.register_craft({
+		core.register_craft({
 			output = "wine:bottle_" .. name,
 			recipe = {
 				{glass, glass, glass},
@@ -155,7 +155,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 			}
 		})
 
-		minetest.register_craft({
+		core.register_craft({
 			output = glass .. " 9",
 			recipe = {{"wine:bottle_" .. name}}
 		})
@@ -243,7 +243,7 @@ end
 
 
 -- Wine barrel node
-minetest.register_node("wine:wine_barrel", {
+core.register_node("wine:wine_barrel", {
 	description = S("Fermenting Barrel"),
 	tiles = {"wine_barrel.png" },
 	drawtype = "mesh",
@@ -257,11 +257,11 @@ minetest.register_node("wine:wine_barrel", {
 	},
 	legacy_facedir_simple = true,
 
-	--on_place = minetest.rotate_node,
+	--on_place = core.rotate_node,
 
 	on_construct = function(pos)
 
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 
 		meta:set_string("formspec", winebarrel_formspec(0, "", 0))
 		meta:set_string("infotext", S("Fermenting Barrel"))
@@ -277,7 +277,7 @@ minetest.register_node("wine:wine_barrel", {
 	-- punch old barrel to change to new 4x slot variant and add a little water
 	on_punch = function(pos, node, puncher, pointed_thing)
 
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		local inv = meta and meta:get_inventory()
 		local size = inv and inv:get_size("src")
 
@@ -293,7 +293,7 @@ minetest.register_node("wine:wine_barrel", {
 
 	can_dig = function(pos,player)
 
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		local inv = meta:get_inventory()
 
 		if not inv:is_empty("dst")
@@ -307,7 +307,7 @@ minetest.register_node("wine:wine_barrel", {
 
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
 
-		if minetest.is_protected(pos, player:get_player_name()) then
+		if core.is_protected(pos, player:get_player_name()) then
 			return 0
 		end
 
@@ -316,11 +316,11 @@ minetest.register_node("wine:wine_barrel", {
 
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 
-		if minetest.is_protected(pos, player:get_player_name()) then
+		if core.is_protected(pos, player:get_player_name()) then
 			return 0
 		end
 
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		local inv = meta:get_inventory()
 
 		if listname == "src" then
@@ -354,11 +354,11 @@ minetest.register_node("wine:wine_barrel", {
 	allow_metadata_inventory_move = function(
 			pos, from_list, from_index, to_list, to_index, count, player)
 
-		if minetest.is_protected(pos, player:get_player_name()) then
+		if core.is_protected(pos, player:get_player_name()) then
 			return 0
 		end
 
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		local inv = meta:get_inventory()
 		local stack = inv:get_stack(from_list, from_index)
 
@@ -377,7 +377,7 @@ minetest.register_node("wine:wine_barrel", {
 
 		if listname == "src_b" then
 
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			local inv = meta:get_inventory()
 			local is_bucket = inv:get_stack("src_b", 1):get_name()
 			local is_water = water_check(is_bucket)
@@ -406,28 +406,28 @@ minetest.register_node("wine:wine_barrel", {
 			end
 		end
 
-		local timer = minetest.get_node_timer(pos)
+		local timer = core.get_node_timer(pos)
 
 		if not timer:is_started() then
-			minetest.get_node_timer(pos):start(5)
+			core.get_node_timer(pos):start(5)
 		end
 	end,
 
 	on_metadata_inventory_move = function(pos)
 
-		local timer = minetest.get_node_timer(pos)
+		local timer = core.get_node_timer(pos)
 
 		if not timer:is_started() then
-			minetest.get_node_timer(pos):start(5)
+			core.get_node_timer(pos):start(5)
 		end
 	end,
 
 	on_metadata_inventory_take = function(pos)
 
-		local timer = minetest.get_node_timer(pos)
+		local timer = core.get_node_timer(pos)
 
 		if not timer:is_started() then
-			minetest.get_node_timer(pos):start(5)
+			core.get_node_timer(pos):start(5)
 		end
 	end,
 
@@ -448,9 +448,9 @@ minetest.register_node("wine:wine_barrel", {
 		-- using a different stack from defaut when inserting
 		insert_object = function(pos, node, stack, direction)
 
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			local inv = meta:get_inventory()
-			local timer = minetest.get_node_timer(pos)
+			local timer = core.get_node_timer(pos)
 
 			if not timer:is_started() then
 				timer:start(5)
@@ -461,7 +461,7 @@ minetest.register_node("wine:wine_barrel", {
 
 		can_insert = function(pos, node, stack, direction)
 
-			local meta = minetest.get_meta(pos)
+			local meta = core.get_meta(pos)
 			local inv = meta:get_inventory()
 
 			return inv:room_for_item("src", stack)
@@ -476,14 +476,14 @@ minetest.register_node("wine:wine_barrel", {
 
 	on_timer = function(pos)
 
-		local meta = minetest.get_meta(pos) ; if not meta then return end
+		local meta = core.get_meta(pos) ; if not meta then return end
 		local inv = meta:get_inventory()
 		local water = meta:get_int("water") or 0
 
 		-- check for pipeworks water inlet or well block
 		if water < 100 then
 
-			if minetest.find_node_near(pos, 1, pipes_list) then
+			if core.find_node_near(pos, 1, pipes_list) then
 
 				water = water + 20
 
@@ -590,7 +590,7 @@ minetest.register_node("wine:wine_barrel", {
 			meta:set_float("status", status + 5)
 
 			local d1 = recipe[2]:split(" ")[1]
-			local desc = minetest.registered_items[d1].description or ""
+			local desc = core.registered_items[d1].description or ""
 
 			txt = S("Brewing: @1", desc) .. " " .. S("(@1% Done)", status)
 
@@ -625,7 +625,7 @@ minetest.register_node("wine:wine_barrel", {
 -- wine barrel craft recipe (with mineclone2 check)
 local ingot = mcl and "mcl_core:iron_ingot" or "default:steel_ingot"
 
-minetest.register_craft({
+core.register_craft({
 	output = "wine:wine_barrel",
 	recipe = {
 		{"group:wood", "group:wood", "group:wood"},
@@ -636,7 +636,7 @@ minetest.register_craft({
 
 
 -- LBMs to start timers on existing, ABM-driven nodes
-minetest.register_lbm({
+core.register_lbm({
 	name = "wine:barrel_timer_upgrade_init",
 	label = "upgrade old barrels and start timers",
 	nodenames = {"wine:wine_barrel"},
@@ -645,7 +645,7 @@ minetest.register_lbm({
 	action = function(pos)
 
 		-- convert any old 2x slot barrels into new 4x slot ones and add a little water
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		local inv = meta and meta:get_inventory()
 		local size = inv and inv:get_size("src")
 
@@ -659,7 +659,7 @@ minetest.register_lbm({
 		end
 
 		-- Start barrel timer
-		minetest.get_node_timer(pos):start(5)
+		core.get_node_timer(pos):start(5)
 	end
 })
 
@@ -671,15 +671,15 @@ dofile(path .. "/agave.lua")
 dofile(path .. "/drinks.lua")
 
 -- add lucky blocks
-if minetest.get_modpath("lucky_block") then
+if core.get_modpath("lucky_block") then
 	dofile(path .. "/lucky_block.lua")
 end
 
 
 -- mineclone2 doesn't have a drinking glass, so if none found add one
-if not minetest.registered_items["vessels:drinking_glass"] then
+if not core.registered_items["vessels:drinking_glass"] then
 
-	minetest.register_node(":vessels:drinking_glass", {
+	core.register_node(":vessels:drinking_glass", {
 		description = S("Empty Drinking Glass"),
 		drawtype = "plantlike",
 		tiles = {"wine_drinking_glass.png"},
@@ -696,7 +696,7 @@ if not minetest.registered_items["vessels:drinking_glass"] then
 		sounds = snd_g,
 	})
 
-	minetest.register_craft( {
+	core.register_craft( {
 		output = "vessels:drinking_glass 14",
 		recipe = {
 			{glass_item, "" , glass_item},
@@ -708,7 +708,7 @@ end
 
 
 -- sort ferment table to fix recipe overlap (large to small)
-minetest.after(0.2, function()
+core.after(0.2, function()
 
 	local tmp = {}
 
