@@ -31,6 +31,7 @@ re-arranged code, tweaked lucky blocks, updated translations
 - 1.95 - Tweaked code to accept 2 item recipes, fixed mineclone2 rum recipe and ui recipes
 - 1.98 - New formspec textures and Kefir drink by Sirrobzeroone
 - 1.99 - Barrel now has 4 slots for recipe items (and drinking glasses) and a water slot to fill up barrel with water buckets ready for fermenting, fix mineclone2 compatibility, added translations, added cointreau and margarita (thx Ethace10 for idea)
+- 2.0 - Add recipes for x_farming (beer, vodka, bourbon, mean, coffee liquor, sparkling carrot juice
 
 Lucky Blocks: 24
 

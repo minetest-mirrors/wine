@@ -117,6 +117,23 @@ if core.get_modpath("farming") then
 	end
 end
 
+-- x_farming
+if core.get_modpath("x_farming") then
+
+	wine:add_item({
+		{"x_farming:barley", "wine:glass_beer"},
+		{"x_farming:bakedpotato", "wine:glass_vodka"},
+		{"x_farming:rice_grains", "wine:glass_sake"},
+		{"x_farming:corn", "wine:glass_bourbon"},
+		{{"x_farming:bottle_honey"}, "wine:glass_mead"},
+		{{"wine:glass_rum", "x_farming:coffee"}, "wine:glass_coffee_liquor"},
+		{
+			{"x_farming:carrot", "x_farming:sugar", "vessels:drinking_glass"},
+			"wine:glass_sparkling_carrot_juice"
+		},
+	})
+end
+
 -- ethereal
 if core.get_modpath("ethereal") then
 
