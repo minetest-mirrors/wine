@@ -61,9 +61,12 @@ function wine:add_item(list)
 		if is_uninv then
 
 			unified_inventory.register_craft({
-				type = "barrel",
-				items = item[1],
-				output = item[2]
+				type = "barrel", items = item[1], output = item[2]
+			})
+		else -- show expensive recipe for item in guide
+			table.insert(item[1], "wine:wine_barrel")
+			core.register_craft({
+				type = "shapeless", output = item[2], recipe = item[1]
 			})
 		end
 	end
@@ -244,7 +247,9 @@ end
 
 -- Wine barrel node
 core.register_node("wine:wine_barrel", {
-	description = S("Fermenting Barrel"),
+	description = S("Fermenting Barrel") .. "\n" ..
+			core.get_color_escape_sequence("#ffdf00") ..
+			S("(Put ingredients inside barrel with water!)"),
 	tiles = {"wine_barrel.png" },
 	drawtype = "mesh",
 	mesh = "wine_barrel.obj",
