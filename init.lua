@@ -91,7 +91,7 @@ end
 function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholic)
 
 	-- glass
-	core.register_node("wine:glass_" .. name, {
+	core.register_node(":wine:glass_" .. name, {
 		description = S("Glass of " .. desc),
 		drawtype = "plantlike",
 		visual_scale = 0.5,
@@ -130,7 +130,7 @@ function wine:add_drink(name, desc, has_bottle, num_hunger, num_thirst, alcoholi
 	-- bottle
 	if has_bottle then
 
-		core.register_node("wine:bottle_" .. name, {
+		core.register_node(":wine:bottle_" .. name, {
 			description = S("Bottle of " .. desc),
 			drawtype = "plantlike",
 			visual_scale = 0.7,
