@@ -33,7 +33,16 @@ Glass of Margarita=Verre de margarita
 Bottle of Margarita=Bouteille de margarita
 Glass of Kefir=Verre de kéfir
 Bottle of Kefir=Bouteille de kéfir
-
+Glass of Brandy=
+Bottle of Brandy=
+Glass of Coffee Liquor=
+Bottle of Coffee Liquor=
+Glass of Champagne=
+Bottle of Champagne=
+Glass of Cointreau=
+Bottle of Cointreau=
+Glass of Margarita=
+Bottle of Margarita=
 Glass of Sparkling Agave Juice=Verre de jus d'agave pétillant
 Bottle of Sparkling Agave Juice=Bouteille de jus d'agave pétillant
 Glass of Sparkling Apple Juice=Verre de jus de pomme pétillant
@@ -47,6 +56,7 @@ Blue Agave=Agave Bleue
 Agave Syrup=Sirop d'Agave
 
 Fermenting Barrel=Baril de fermentation
+(Put ingredients inside barrel with water!)=
 Brewing: @1=Sortie pleine: @1
 Water @1% Full=l'eau @1 rempli
 Water Added=eau ajoutée
