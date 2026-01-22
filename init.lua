@@ -81,7 +81,7 @@ function wine.add_eatable(item, hp)
 
 		local groups = table.copy(def.groups) or {}
 
-		groups.eatable = hp ; groups.flammable = 2
+		groups.eatable = hp ; groups.flammable = 2 ; groups.food = 3
 
 		core.override_item(item, {groups = groups})
 	end
