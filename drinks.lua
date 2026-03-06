@@ -163,6 +163,9 @@ if core.get_modpath("mcl_core") then
 		{
 			{"mcl_farming:carrot_item", "mcl_core:sugar", "vessels:drinking_glass"},
 			"wine:glass_sparkling_carrot_juice"
+		},
+		{
+			{"mcl_honey:honey_bottle"}, "wine:glass_mead"
 		}
 	})
 end
