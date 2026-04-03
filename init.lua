@@ -64,10 +64,13 @@ function wine:add_item(list)
 				type = "barrel", items = item[1], output = item[2]
 			})
 		else -- show expensive recipe for item in guide
---			table.insert(item[1], "wine:wine_barrel")
---			core.register_craft({
---				type = "shapeless", output = item[2], recipe = item[1]
---			})
+			local recipe = table.copy(item[1])
+
+			table.insert(recipe, "wine:wine_barrel")
+
+			core.register_craft({
+				type = "shapeless", output = item[2], recipe = recipe
+			})
 		end
 	end
 end
