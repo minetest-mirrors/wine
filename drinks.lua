@@ -45,10 +45,8 @@ core.override_item("wine:glass_brandy", {groups = grp})
 
 -- wine mod adds tequila by default
 wine:add_item({
-	{
-		{"wine:agave_syrup", "wine:blue_agave", "vessels:drinking_glass"},
-		"wine:glass_sparkling_agave_juice"
-	},
+	{{"wine:agave_syrup", "wine:blue_agave", "vessels:drinking_glass"},
+			"wine:glass_sparkling_agave_juice"},
 	{"wine:blue_agave", "wine:glass_tequila"}
 })
 
@@ -82,7 +80,7 @@ if core.get_modpath("farming") then
 
 	wine:add_item({ {"farming:wheat", "wine:glass_wheat_beer"} })
 
-	if farming.mod and (farming.mod == "redo" or farming.mod == "undo") then
+	if farming.mod and farming.mod == "redo" then
 
 		-- mint julep recipe
 		core.register_craft({
@@ -101,18 +99,12 @@ if core.get_modpath("farming") then
 			{"farming:baked_potato", "wine:glass_vodka"},
 			{{"wine:glass_rum", "farming:coffee_beans"}, "wine:glass_coffee_liquor"},
 			{{"wine:glass_wine", "farming:sugar"}, "wine:glass_champagne"},
-			{
-				{"default:apple", "farming:sugar", "vessels:drinking_glass"},
-				"wine:glass_sparkling_apple_juice"
-			},
-			{
-				{"farming:carrot", "farming:sugar", "vessels:drinking_glass"},
-				"wine:glass_sparkling_carrot_juice"
-			},
-			{
-				{"farming:blackberry", "farming:sugar", "vessels:drinking_glass"},
-				"wine:glass_sparkling_blackberry_juice"
-			}
+			{{"default:apple", "farming:sugar", "vessels:drinking_glass"},
+					"wine:glass_sparkling_apple_juice"},
+			{{"farming:carrot", "farming:sugar", "vessels:drinking_glass"},
+					"wine:glass_sparkling_carrot_juice"},
+			{{"farming:blackberry", "farming:sugar", "vessels:drinking_glass"},
+					"wine:glass_sparkling_blackberry_juice"}
 		})
 	end
 end
@@ -127,10 +119,8 @@ if core.get_modpath("x_farming") then
 		{"x_farming:corn", "wine:glass_bourbon"},
 		{{"x_farming:bottle_honey"}, "wine:glass_mead"},
 		{{"wine:glass_rum", "x_farming:coffee"}, "wine:glass_coffee_liquor"},
-		{
-			{"x_farming:carrot", "x_farming:sugar", "vessels:drinking_glass"},
-			"wine:glass_sparkling_carrot_juice"
-		},
+		{{"x_farming:carrot", "x_farming:sugar", "vessels:drinking_glass"},
+				"wine:glass_sparkling_carrot_juice"}
 	})
 end
 
@@ -156,16 +146,10 @@ if core.get_modpath("mcl_core") then
 		{"mcl_core:reeds", "wine:glass_rum"},
 		{"mcl_farming:wheat_item", "wine:glass_wheat_beer"},
 		{"mcl_farming:potato_item_baked", "wine:glass_vodka"},
-		{
-			{"mcl_core:apple", "mcl_core:sugar", "vessels:drinking_glass"},
-			"wine:glass_sparkling_apple_juice"
-		},
-		{
-			{"mcl_farming:carrot_item", "mcl_core:sugar", "vessels:drinking_glass"},
-			"wine:glass_sparkling_carrot_juice"
-		},
-		{
-			{"mcl_honey:honey_bottle"}, "wine:glass_mead"
-		}
+		{{"mcl_core:apple", "mcl_core:sugar", "vessels:drinking_glass"},
+				"wine:glass_sparkling_apple_juice"},
+		{{"mcl_farming:carrot_item", "mcl_core:sugar", "vessels:drinking_glass"},
+				"wine:glass_sparkling_carrot_juice"},
+		{{"mcl_honey:honey_bottle"}, "wine:glass_mead"}
 	})
 end
