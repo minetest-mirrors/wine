@@ -28,7 +28,8 @@ core.register_node("wine:blue_agave", {
 		type = "fixed",
 		fixed = {-0.2, -0.5, -0.2, 0.2, 0.3, 0.2}
 	},
-	groups = {snappy = 3, attached_node = 1, plant = 1},
+	groups = {snappy = 3, attached_node = 1, plant = 1,
+			eatable = 2, flammable = 2, food = 1},
 	sounds = snd_l,
 
 	on_use = core.item_eat(2),
@@ -72,8 +73,6 @@ core.register_node("wine:blue_agave", {
 		return true
 	end
 })
-
-wine.add_eatable("wine:blue_agave", 2)
 
 -- blue agave into cyan dye
 if core.get_modpath("mcl_dye") then
