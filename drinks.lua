@@ -8,6 +8,7 @@ wine:add_drink("wheat_beer", "Wheat Beer", true, 2, 8, 1)
 wine:add_drink("sake", "Sake", true, 2, 3, 1)
 wine:add_drink("bourbon", "Bourbon", true, 2, 3, 1)
 wine:add_drink("vodka", "Vodka", true, 2, 3, 1)
+wine:add_drink("lambanog", "Lambanog", true, 1, 3, 1)
 wine:add_drink("cider", "Cider", true, 2, 6, 1)
 wine:add_drink("mead", "Honey-Mead", true, 4, 5, 1)
 wine:add_drink("mint", "Mint Julep", true, 4, 3, 1)
@@ -127,7 +128,10 @@ end
 -- ethereal
 if core.get_modpath("ethereal") then
 
-	wine:add_item({ {"ethereal:orange", "wine:glass_cointreau"} })
+	wine:add_item({
+		{"ethereal:orange", "wine:glass_cointreau"},
+		{"ethereal:coconut_slice", "wine:glass_lambanog"},
+	})
 
 	-- margarita recipe
 	core.register_craft({
